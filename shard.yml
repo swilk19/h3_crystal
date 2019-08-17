@@ -1,8 +1,11 @@
 name: h3_crystal
-version: 0.1.0
+version: 3.6.0
 
 authors:
   - swilkins <sean@swilkins.io>
+
+scripts:
+  postinstall: "make -C ext clean"
 
 crystal: 0.30.1
 
