@@ -1,0 +1,4 @@
+[submodule "ext/h3"]
+	path = ext/h3
+	url = https://github.com/uber/h3.git
+	branch = master

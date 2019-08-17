@@ -1,0 +1,9 @@
+name: h3_crystal
+version: 0.1.0
+
+authors:
+  - swilkins <sean@swilkins.io>
+
+crystal: 0.30.1
+
+license: MIT
