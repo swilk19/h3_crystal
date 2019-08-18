@@ -6,6 +6,6 @@ describe H3 do
   it "works" do
     result = H3.from_geo_coordinates({53.959130, -1.079230}, 8)
     puts "#{result}"
-    true.should eq(true)
+    result.should eq(612933930963697663)
   end
 end
