@@ -5,7 +5,7 @@ lib LibH3
     lat, lon : Float64
   end
 
-  fun degs_to_rads = degsToRads(Float64) : Float64
+  fun degs_to_rads = degsToRads(degrees : Float64) : Float64
   
-  fun geo_to_h3 = geoToH3(g : GeoCoord, res : Int32) : UInt64
+  fun geo_to_h3 = geoToH3(g : Pointer(GeoCoord), res : Int32) : UInt64
 end

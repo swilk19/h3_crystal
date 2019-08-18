@@ -27,6 +27,6 @@ module Indexing
       puts "Coords: #{geo_coords}, Resolution: #{resolution}"
     #   Bindings::Private.geo_to_h3(coords, resolution)
       # puts "Resolution: #{resolution}"
-      return LibH3.geo_to_h3(geo_coords, resolution)
+      return LibH3.geo_to_h3(pointerof(geo_coords), resolution)
     end
 end
