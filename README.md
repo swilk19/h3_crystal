@@ -1,4 +1,4 @@
-# H3 Crystal
+# H3 Crystal - Testing
 
 ![h3](https://user-images.githubusercontent.com/98526/50283275-48177300-044d-11e9-8337-eba8d3cc88a2.png)
 
@@ -8,11 +8,11 @@ Please consult [the H3 documentation](https://uber.github.io/h3/#/documentation/
 
 ## Supported H3 Versions
 
-The semantic versioning of this gem matches the versioning of the H3 C library. E.g. version `3.5.x` of this gem is targeted for version `3.5.y` of H3 C lib where `x` and `y` are independent patch levels.
+The semantic versioning of this shard matches the versioning of the H3 C library. E.g. version `3.5.x` of this shard is targeted for version `3.5.y` of H3 C lib where `x` and `y` are independent patch levels.
 
 ## Getting Started
 
-Before installing the gem, please install the build dependencies for your system as instructed here: https://github.com/uber/h3#install-build-time-dependencies
+Before installing the shard, please install the build dependencies for your system as instructed here: https://github.com/uber/h3#install-build-time-dependencies
 
 
 ## Installation
