@@ -24,9 +24,7 @@ module Indexing
       geo_coords = LibH3::GeoCoord.new
       geo_coords.lat = LibH3.degs_to_rads(lat)
       geo_coords.lon = LibH3.degs_to_rads(lon)
-      puts "Coords: #{geo_coords}, Resolution: #{resolution}"
-    #   Bindings::Private.geo_to_h3(coords, resolution)
-      # puts "Resolution: #{resolution}"
+
       return LibH3.geo_to_h3(pointerof(geo_coords), resolution)
     end
 end
