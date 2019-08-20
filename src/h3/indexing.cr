@@ -2,6 +2,7 @@ require "./bindings/base"
 
 module Indexing
     extend H3::Bindings::Base
+    # include H3::Bindings::Types
     # Derive H3 index for the given set of coordinates.
     #
     # @param [Array<Integer>] coords A coordinate pair.
@@ -24,7 +25,25 @@ module Indexing
       geo_coords = LibH3::GeoCoord.new
       geo_coords.lat = LibH3.degs_to_rads(lat)
       geo_coords.lon = LibH3.degs_to_rads(lon)
+      
+      LibH3.geo_to_h3(pointerof(geo_coords), resolution)
+    end
 
-      return LibH3.geo_to_h3(pointerof(geo_coords), resolution)
+    # Derive coordinates for a given H3 index.
+    #
+    # The coordinates map to the centre of the hexagon at the given index.
+    #
+    # @param [Integer] h3_index A valid H3 index.
+    #
+    # @example Derive the central coordinates for the given H3 index.
+    #   H3.to_geo_coordinates(617439284584775679)
+    #   [52.245519061399506, -1.7363137757391423]
+    #
+    # @return [Array<Integer>] A coordinate pair.
+    def to_geo_coordinates(h3_index : UInt64)
+      coords = LibH3::GeoCoord.new
+      LibH3.h3_to_geo(h3_index, pointerof(coords))
+
+      {LibH3.rads_to_degs(coords.lat), LibH3.rads_to_degs(coords.lon)}
     end
 end
