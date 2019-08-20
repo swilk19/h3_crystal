@@ -1,7 +1,7 @@
 require "./bindings/base"
 
 module Indexing
-    extend H3::Bindings::Base
+    include H3::Bindings::Base
     # include H3::Bindings::Types
     # Derive H3 index for the given set of coordinates.
     #
@@ -40,10 +40,11 @@ module Indexing
     #   [52.245519061399506, -1.7363137757391423]
     #
     # @return [Array<Integer>] A coordinate pair.
-    def to_geo_coordinates(h3_index : UInt64)
+    def to_geo_coordinates(h3_index : UInt64) : Tuple(Float64, Float64)
       coords = LibH3::GeoCoord.new
       LibH3.h3_to_geo(h3_index, pointerof(coords))
-
+      resolution = Resolution.new(5)
+      puts "Resolution example: #{resolution}"
       {LibH3.rads_to_degs(coords.lat), LibH3.rads_to_degs(coords.lon)}
     end
 end
