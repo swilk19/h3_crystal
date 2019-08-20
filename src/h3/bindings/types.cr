@@ -8,6 +8,10 @@ module H3
           raise("Value must be between #{RANGE.begin} and #{RANGE.end}") unless RANGE.covers?(value)
           @value = value 
         end
+
+        def value
+          @value
+        end
       end
     end
   end

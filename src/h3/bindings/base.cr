@@ -9,8 +9,6 @@ module H3
       #
       # When extended, this module sets up the class to use the H3 C library.
       include Types
-      test = Resolution.new(5)
-      puts "Test: #{test}"
     end
   end  
 end

@@ -15,7 +15,7 @@ module Indexing
     # @raise [ArgumentError] If coordinates are invalid.
     #
     # @return [Integer] H3 index.
-    def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Int32) : UInt64
+    def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Resolution) : UInt64
       lat, lon = coords
 
       if lat > 90 || lat < -90 || lon > 180 || lon < -180
@@ -26,7 +26,7 @@ module Indexing
       geo_coords.lat = LibH3.degs_to_rads(lat)
       geo_coords.lon = LibH3.degs_to_rads(lon)
       
-      LibH3.geo_to_h3(pointerof(geo_coords), resolution)
+      LibH3.geo_to_h3(pointerof(geo_coords), resolution.value)
     end
 
     # Derive coordinates for a given H3 index.
