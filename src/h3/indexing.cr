@@ -22,9 +22,10 @@ module Indexing
         raise("Invalid coordinates")
       end
 
-      geo_coords = LibH3::GeoCoord.new
-      geo_coords.lat = LibH3.degs_to_rads(lat)
-      geo_coords.lon = LibH3.degs_to_rads(lon)
+      geo_coords = LibH3::GeoCoord.new(
+        lat: LibH3.degs_to_rads(lat),
+        lon: LibH3.degs_to_rads(lon)
+      )
       
       LibH3.geo_to_h3(pointerof(geo_coords), resolution.value)
     end
@@ -41,10 +42,8 @@ module Indexing
     #
     # @return [Array<Integer>] A coordinate pair.
     def to_geo_coordinates(h3_index : UInt64) : Tuple(Float64, Float64)
-      coords = LibH3::GeoCoord.new
-      LibH3.h3_to_geo(h3_index, pointerof(coords))
-      resolution = Resolution.new(5)
-      puts "Resolution example: #{resolution}"
+      LibH3.h3_to_geo(h3_index, out coords)
+
       {LibH3.rads_to_degs(coords.lat), LibH3.rads_to_degs(coords.lon)}
     end
 end
