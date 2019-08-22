@@ -8,7 +8,7 @@ lib LibH3
 
   struct GeoBoundary
     num_verts : Int32
-    verts : GeoCoord*
+    verts : GeoCoord[10]
   end
 
   fun degs_to_rads = degsToRads(degrees : Float64) : Float64

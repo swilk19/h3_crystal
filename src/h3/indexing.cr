@@ -26,7 +26,7 @@ module Indexing
         lat: LibH3.degs_to_rads(lat),
         lon: LibH3.degs_to_rads(lon)
       )
-      
+
       LibH3.geo_to_h3(pointerof(geo_coords), resolution.value)
     end
 
@@ -45,5 +45,35 @@ module Indexing
       LibH3.h3_to_geo(h3_index, out coords)
 
       {LibH3.rads_to_degs(coords.lat), LibH3.rads_to_degs(coords.lon)}
+    end
+
+    # Derive the geographical boundary as coordinates for a given H3 index.
+    #
+    # This will be a set of 6 coordinate pairs matching the vertexes of the
+    # hexagon represented by the given H3 index.
+    #
+    # If the H3 index is a pentagon, there will be only 5 coordinate pairs returned.
+    #
+    # @param [Integer] h3_index A valid H3 index.
+    #
+    # @example Derive the geographical boundary for the given H3 index.
+    #   H3.to_boundary(617439284584775679)
+    #   [
+    #     [52.247260929171055, -1.736809158397472], [52.24625850761068, -1.7389279144996015],
+    #     [52.244516619273476, -1.7384324668792375], [52.243777169245725, -1.7358184256304658],
+    #     [52.24477956752282, -1.7336997597088104], [52.246521439109415, -1.7341950448552204]
+    #   ]
+    #
+    # @return [Array<Array<Integer>>] An array of six coordinate pairs.
+    def to_boundary(h3_index : UInt64) : Array(Tuple(Float64, Float64))
+      LibH3.h3_to_geo_boundary(h3_index, out geo_boundary)
+      result = [] of Tuple(Float64, Float64)
+      geo_boundary.verts.each_with_index do |vertex, i|
+        next if i >= geo_boundary.num_verts 
+
+        result << { LibH3.rads_to_degs(vertex.lat), LibH3.rads_to_degs(vertex.lon) }
+      end
+      
+      result
     end
 end
