@@ -1,4 +1,4 @@
-@[Link(ldflags: "#{__DIR__}/../../../ext/h3/lib/libh3.dylib")]
+@[Link(ldflags: "#{__DIR__}/../../../ext/h3/lib/libh3.so")]
 lib LibH3
   alias H3Index = UInt64
 
