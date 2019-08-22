@@ -5,7 +5,7 @@ authors:
   - swilkins <sean@swilkins.io>
 
 scripts:
-  postinstall: "make -C ext clean"
+  postinstall: "make -C ext"
 
 crystal: 0.30.1
 
