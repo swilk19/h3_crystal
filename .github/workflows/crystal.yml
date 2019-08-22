@@ -19,6 +19,7 @@ jobs:
         apt-get update -y
         apt-get install cmake make gcc libtool -y
         make -C ext
+        export LD_LIBRARY_PATH=`cd ext/h3/lib && pwd`
         shards install
     - name: Run tests
       run: crystal spec
