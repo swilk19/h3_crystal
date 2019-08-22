@@ -16,8 +16,8 @@ jobs:
         submodules: true
     - name: Install dependencies
       run: |
-        apt-get update
-        apt-get install cmake make gcc libtool
+        apt-get update -y
+        apt-get install cmake make gcc libtool -y
         make -C ext
         shards install
     - name: Run tests
