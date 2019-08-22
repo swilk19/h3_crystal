@@ -16,7 +16,7 @@ jobs:
         submodules: true
     - name: Install dependencies
       run: |
-        apt install cmake make gcc libtool
+        apk add cmake make gcc libtool musl-dev
         make -C ext
         shards install
     - name: Run tests
