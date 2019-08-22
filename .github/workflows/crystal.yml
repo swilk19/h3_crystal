@@ -15,8 +15,7 @@ jobs:
       with:
         submodules: true
     - name: Install dependencies
-      run: make -C ext clean
-      run: shards install
+      run: make -C ext clean && shards install
     - name: Run tests
       run: crystal spec
 
