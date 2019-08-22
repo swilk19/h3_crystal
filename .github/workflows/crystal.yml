@@ -5,7 +5,7 @@ on: push
 jobs:
   build:
 
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     
     container:
       image: crystallang/crystal:latest
@@ -15,7 +15,9 @@ jobs:
       with:
         submodules: true
     - name: Install dependencies
-      run: make -C ext clean && shards install
+      run: |
+        make -C ext
+        shards install
     - name: Run tests
       run: crystal spec
 
