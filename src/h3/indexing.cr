@@ -1,7 +1,9 @@
 require "./bindings/base"
+require "./miscellaneous"
 
 module Indexing
     include H3::Bindings::Base
+    include Miscellaneous
     # include H3::Bindings::Types
     # Derive H3 index for the given set of coordinates.
     #
@@ -15,19 +17,19 @@ module Indexing
     # @raise [ArgumentError] If coordinates are invalid.
     #
     # @return [Integer] H3 index.
-    def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Resolution) : UInt64
+    def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Int32) : UInt64
       lat, lon = coords
 
       if lat > 90 || lat < -90 || lon > 180 || lon < -180
-        raise("Invalid coordinates")
+        raise "Invalid coordinates"
       end
 
       geo_coords = LibH3::GeoCoord.new(
-        lat: LibH3.degs_to_rads(lat),
-        lon: LibH3.degs_to_rads(lon)
+        lat: degs_to_rads(lat),
+        lon: degs_to_rads(lon)
       )
-
-      LibH3.geo_to_h3(pointerof(geo_coords), resolution.value)
+      
+      LibH3.geo_to_h3(pointerof(geo_coords), Resolution.new(resolution))
     end
 
     # Derive coordinates for a given H3 index.
@@ -44,7 +46,7 @@ module Indexing
     def to_geo_coordinates(h3_index : UInt64) : Tuple(Float64, Float64)
       LibH3.h3_to_geo(h3_index, out coords)
 
-      {LibH3.rads_to_degs(coords.lat), LibH3.rads_to_degs(coords.lon)}
+      {rads_to_degs(coords.lat), rads_to_degs(coords.lon)}
     end
 
     # Derive the geographical boundary as coordinates for a given H3 index.
@@ -71,7 +73,7 @@ module Indexing
       geo_boundary.verts.each_with_index do |vertex, i|
         next if i >= geo_boundary.num_verts 
 
-        result << { LibH3.rads_to_degs(vertex.lat), LibH3.rads_to_degs(vertex.lon) }
+        result << { rads_to_degs(vertex.lat), rads_to_degs(vertex.lon) }
       end
       
       result

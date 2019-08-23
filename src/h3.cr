@@ -5,10 +5,12 @@
 #
 # @see https://uber.github.io/h3/#/documentation/overview/introduction
 require "./h3/indexing"
+require "./h3/inspection"
 
 module H3
   VERSION = "3.6.0"
 
-  # TODO: Put your code here
+  # TODO: Put code here
   extend Indexing
+  extend Inspection
 end

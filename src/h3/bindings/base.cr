@@ -9,6 +9,7 @@ module H3
       #
       # When extended, this module sets up the class to use the H3 C library.
       include Types
+      include Private
     end
   end  
 end
