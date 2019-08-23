@@ -22,6 +22,4 @@ jobs:
         export LD_LIBRARY_PATH=`cd ext/h3/lib && pwd`
         shards install
     - name: Run tests
-      run: echo $LD_LIBRARY_PATH
-      run: crystal spec
-
+      run: echo $LD_LIBRARY_PATH && crystal spec
