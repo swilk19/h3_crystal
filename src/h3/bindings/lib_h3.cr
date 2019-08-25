@@ -5,7 +5,7 @@ module H3
     module Private
       include Types
 
-      @[Link(ldflags: "#{__DIR__}/../../../ext/h3/lib/libh3.dylib")]
+      @[Link(ldflags: "-L#{__DIR__}/../../../ext/h3/lib/ -lh3")]
       lib LibH3
         alias H3Index = UInt64
 
@@ -26,6 +26,7 @@ module H3
         fun hex_area_m2 = hexAreaM2(res : Int32) : Float64
         fun edge_length_km = edgeLengthKm(res : Int32) : Float64
         fun edge_length_m = edgeLengthM(res : Int32) : Float64
+        fun res_0_indexes = getRes0Indexes(h3_indexes_out : H3Index)
         
         # Indexing
         fun geo_to_h3 = geoToH3(g : Pointer(GeoCoord), res : Int32) : H3Index
