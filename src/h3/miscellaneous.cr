@@ -89,7 +89,6 @@ module Miscellaneous
   #   14117882
   #
   # @return [Integer] Number of unique hexagons
-  # attach_function :hexagon_count, :numHexagons, [Resolution], :ulong_long
   def hexagon_count(resolution : Int32) : UInt64
     LibH3.hexagon_count(Resolution.new(resolution))
   end
@@ -118,7 +117,6 @@ module Miscellaneous
   #    122
   #
   # @return [Integer] The number of resolution 0 hexagons (base cells).
-  # attach_function :base_cell_count, :res0IndexCount, [], :int
   def base_cell_count : Int32
     LibH3.base_cell_count
   end
@@ -133,7 +131,6 @@ module Miscellaneous
   #    12
   #
   # @return [Integer] The number of pentagons per resolution.
-  # attach_function :pentagon_count, :pentagonIndexCount, [], :int
   def pentagon_count
     12
   end
