@@ -5,7 +5,7 @@ module H3
     module Private
       include Types
 
-      @[Link(ldflags: "-L#{__DIR__}/../../../ext/h3/lib -L#{__DIR__}/../../../ext/h3/src/h3lib/include -lh3")]
+      @[Link(ldflags: "-L#{__DIR__}/../../../ext/h3/lib -lh3")]
       lib LibH3
         alias H3Index = UInt64
 
@@ -26,8 +26,10 @@ module H3
         fun hex_area_m2 = hexAreaM2(res : Int32) : Float64
         fun edge_length_km = edgeLengthKm(res : Int32) : Float64
         fun edge_length_m = edgeLengthM(res : Int32) : Float64
-        fun res_0_indexes = getRes0Indexes(h3_indexes_out : H3Index)
-        
+        fun res_0_indexes = getRes0Indexes(h3_indexes_out : StaticArray(H3Index, 122)*) : Void
+        fun base_cell_count = res0IndexCount : Int32
+        fun get_pentagon_indexes = getPentagonIndexes(res : Int32, h3_indexes_out : StaticArray(H3Index, 12)*) : Void
+
         # Indexing
         fun geo_to_h3 = geoToH3(g : Pointer(GeoCoord), res : Int32) : H3Index
         fun h3_to_geo = h3ToGeo(h3_index : H3Index, g : Pointer(GeoCoord)) : Void

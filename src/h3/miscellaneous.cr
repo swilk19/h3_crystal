@@ -120,7 +120,7 @@ module Miscellaneous
   # @return [Integer] The number of resolution 0 hexagons (base cells).
   # attach_function :base_cell_count, :res0IndexCount, [], :int
   def base_cell_count : Int32
-    1
+    LibH3.base_cell_count
   end
 
   # @!method pentagon_count
@@ -139,28 +139,26 @@ module Miscellaneous
   end
 
   # Returns all resolution 0 hexagons (base cells).
-    #
-    # @example Return all base cells.
-    #   H3.base_cells
-    #   [576495936675512319, 576531121047601151, ..., 580753245698260991]
-    #
-    # @return [Array<Integer>] All resolution 0 hexagons (base cells).
-    # def base_cells
-    #   out = H3Indexes.of_size(base_cell_count)
-    #   Bindings::Private.res_0_indexes(out)
-    #   out.read
-    # end
+  #
+  # @example Return all base cells.
+  #   H3.base_cells
+  #   [576495936675512319, 576531121047601151, ..., 580753245698260991]
+  #
+  # @return [Array<Integer>] All resolution 0 hexagons (base cells).
+  def base_cells : Array(UInt64)
+    LibH3.res_0_indexes(out base_cells)
+    Array(UInt64).new(base_cells.size) { |i| base_cells[i] }
+  end
 
-    # Returns all pentagon indexes at the given resolution.
-    #
-    # @example Return all pentagons at resolution 4.
-    #   H3.pentagons(4)
-    #   [594615896891195391, 594967740612083711, ..., 598591730937233407]
-    #
-    # @return [Array<Integer>] All pentagon indexes at the given resolution.
-    # def pentagons(resolution)
-    #   out = H3Indexes.of_size(pentagon_count)
-    #   Bindings::Private.get_pentagon_indexes(resolution, out)
-    #   out.read
-    # end
+  # Returns all pentagon indexes at the given resolution.
+  #
+  # @example Return all pentagons at resolution 4.
+  #   H3.pentagons(4)
+  #   [594615896891195391, 594967740612083711, ..., 598591730937233407]
+  #
+  # @return [Array<Integer>] All pentagon indexes at the given resolution.
+  def pentagons(resolution) : Array(UInt64)
+    LibH3.get_pentagon_indexes(resolution, out pentagons)
+    Array(UInt64).new(pentagons.size) { |i| pentagons[i] }
+  end
 end
