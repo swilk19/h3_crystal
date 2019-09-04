@@ -2,6 +2,8 @@
 
 ![h3](https://user-images.githubusercontent.com/98526/50283275-48177300-044d-11e9-8337-eba8d3cc88a2.png)
 
+![build](https://github.com/swilk19/h3_crystal/workflows/build/badge.svg)
+
 Crystal-to-C bindings for Uber's [H3 library](https://uber.github.io/h3/).
 
 Please consult [the H3 documentation](https://uber.github.io/h3/#/documentation/overview/introduction) for a full explanation of terminology and concepts.
