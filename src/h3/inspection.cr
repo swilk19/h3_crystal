@@ -14,5 +14,4 @@ module Inspection
     #   9
     #
     # @return [Integer] Resolution of H3 index
-    # attach_function :resolution, :h3GetResolution, %i[h3_index], Resolution
 end
