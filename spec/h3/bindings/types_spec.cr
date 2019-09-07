@@ -1,5 +1,5 @@
 describe H3 do
-  it "should raise an error if resolution out of bounds" do 
+  it "should raise an error if resolution out of bounds" do
     expect_raises(Exception) do
       Resolution.new(100)
     end

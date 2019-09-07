@@ -73,7 +73,7 @@ describe H3 do
       h3_index = "8928308280fffff".to_u64(16)
       result = false
 
-      it { H3.pentagon?(h3_index).should eq(result) } 
+      it { H3.pentagon?(h3_index).should eq(result) }
     end
   end
 
@@ -90,8 +90,8 @@ describe H3 do
       result = 5
 
       max_face_count = H3.max_face_count(h3_index)
-      
-      it { max_face_count.should eq(result) } 
+
+      it { max_face_count.should eq(result) }
     end
   end
 
@@ -109,7 +109,7 @@ describe H3 do
 
       faces = H3.faces(h3_index)
 
-      it { faces.should eq(result) } 
+      it { faces.should eq(result) }
     end
   end
 end

@@ -11,6 +11,5 @@ module H3
       include Types
       include Private
     end
-  end  
+  end
 end
-

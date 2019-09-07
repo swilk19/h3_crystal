@@ -6,7 +6,7 @@ module H3
 
         def initialize(value : Int32)
           raise("Value must be between #{RANGE.begin} and #{RANGE.end}") unless RANGE.covers?(value)
-          @value = value 
+          @value = value
         end
 
         def value
@@ -19,4 +19,4 @@ module H3
       end
     end
   end
-end    
+end
