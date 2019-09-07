@@ -20,6 +20,9 @@ jobs:
         apt-get install cmake make gcc libtool -y
         make -C ext
         shards install
+    - name: Linting
+      run: |
+        crystal tool format --check
     - name: Run tests
       run: |
         export LD_LIBRARY_PATH=`cd ext/h3/lib && pwd`:$LD_LIBRARY_PATH
