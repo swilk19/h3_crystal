@@ -70,13 +70,9 @@ module Indexing
   # @return [Array<Array<Integer>>] An array of six coordinate pairs.
   def to_boundary(h3_index : UInt64) : Array(Tuple(Float64, Float64))
     LibH3.h3_to_geo_boundary(h3_index, out geo_boundary)
-    result = [] of Tuple(Float64, Float64)
-    geo_boundary.verts.each_with_index do |vertex, i|
-      next if i >= geo_boundary.num_verts
 
-      result << {rads_to_degs(vertex.lat), rads_to_degs(vertex.lon)}
+    geo_boundary.verts.first(geo_boundary.num_verts).map do |vertex|
+      {rads_to_degs(vertex.lat), rads_to_degs(vertex.lon)}
     end
-
-    result
   end
 end
