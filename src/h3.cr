@@ -7,6 +7,7 @@
 require "./h3/indexing"
 require "./h3/inspection"
 require "./h3/traversal"
+require "./h3/hierarchy"
 
 module H3
   VERSION = "3.6.0"
@@ -15,4 +16,5 @@ module H3
   extend Indexing
   extend Inspection
   extend Traversal
+  extend Hierarchy
 end

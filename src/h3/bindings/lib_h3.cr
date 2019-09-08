@@ -58,10 +58,19 @@ module H3
         fun distance = h3Distance(origin : H3Index, destination : H3Index) : Int32
         fun line_size = h3LineSize(start : H3Index, end_point : H3Index) : Int32
         fun h3_line = h3Line(start : H3Index, destination : H3Index, output : H3Index*) : Int32
+
+        # Hierarchy
+        fun parent = h3ToParent(h3_index : H3Index, res : Int32) : H3Index
+        fun max_children = maxH3ToChildrenSize(h3_index : H3Index, res : Int32) : Int32
+        fun h3_to_children = h3ToChildren(h3_index : H3Index, res : Int32, h3_indexes_out : H3Index*) : Void
+        fun compact = compact(h3_set : H3Index*, compacted_set : H3Index*, size : Int32) : Bool
+        fun max_uncompact_size = maxUncompactSize(h3_set : H3Index*, size : LibC::SizeT, res : Int32) : Int32
+        fun uncompact = uncompact(h3_set : H3Index*, size : LibC::SizeT, h3_indexes_out : H3Index*, size : LibC::SizeT, res : Int32) : Bool
+        fun center_child = h3ToCenterChild(h3_index : H3Index, res : Int32) : UInt64
       end
 
       def read_array_of_uint64(ptr : Pointer(UInt64), size : Int32) : Array(UInt64)
-        Array(UInt64).new(size) { |i| ptr[i] }
+        Array(UInt64).new(size) { |i| ptr[i] }.reject! { |value| value.zero? }
       end
 
       def read_array_of_int32(ptr : Pointer(Int32), size : Int32) : Array(Int32)
