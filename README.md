@@ -52,3 +52,6 @@ TODO: Write development instructions here
 ## Contributors
 
 - [swilkins](https://github.com/your-github-user) - creator and maintainer
+
+## Special Thanks
+- [H3 Ruby](https://github.com/StuartApp/h3_ruby)
