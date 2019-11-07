@@ -34,32 +34,34 @@ describe H3 do
   end
 
   describe ".valid?" do
-    h3_index = UInt64.new(612933930963697663)
-    actual = H3.valid?(h3_index)
-
-    it { actual.should be_true }
+    it "is valid" do
+      h3_index = UInt64.new(612933930963697663)
+      actual = H3.valid?(h3_index)
+      actual.should be_true
+    end
 
     context "when given an invalid h3_index" do
-      h3_index = UInt64.new(1)
-      actual = H3.valid?(h3_index)
-
-      it "returns the expected result" do
+      it "is not valid" do
+        h3_index = UInt64.new(1)
+        actual = H3.valid?(h3_index)
         actual.should be_false
       end
     end
   end
 
   describe ".class_3_resolution?" do
-    h3_index = "8928308280fffff".to_u64(16)
-    actual = H3.class_3_resolution?(h3_index)
-
-    it { actual.should be_true }
-
-    context "when the h3 index is not class III" do
-      h3_index = "8828308280fffff".to_u64(16)
+    it "is a class 3 resolution" do
+      h3_index = "8928308280fffff".to_u64(16)
       actual = H3.class_3_resolution?(h3_index)
+      actual.should be_true
+    end
 
-      it { actual.should be_false }
+    context "when the h3 index is not class III" do  
+      it "returns false" do
+        h3_index = "8828308280fffff".to_u64(16)
+        actual = H3.class_3_resolution?(h3_index)
+        actual.should be_false
+      end
     end
   end
 
