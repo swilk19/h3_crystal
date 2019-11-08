@@ -14,7 +14,7 @@ describe H3 do
   describe ".from_string" do
     it "turns a string into an h3 index" do
       h3_index = "8928308280fffff"
-  
+
       H3.from_string(h3_index).should eq "8928308280fffff".to_u64(16)
     end
   end
@@ -50,7 +50,7 @@ describe H3 do
       H3.class_3_resolution?(h3_index).should be_true
     end
 
-    context "when the h3 index is not class III" do  
+    context "when the h3 index is not class III" do
       it "returns false" do
         h3_index = "8828308280fffff".to_u64(16)
 
@@ -65,7 +65,7 @@ describe H3 do
         h3_index = "821c07fffffffff".to_u64(16)
 
         H3.pentagon?(h3_index).should be_true
-       end
+      end
     end
 
     context "when the h3 index is not a pentagon" do

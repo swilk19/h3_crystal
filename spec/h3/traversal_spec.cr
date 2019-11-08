@@ -145,7 +145,7 @@ describe H3 do
         "85283447fffffff", "8528347bfffffff", "85283463fffffff",
         "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_range_distances = H3.hex_range_distances(h3_index, k)
 
       hex_range_distances.size.should eq 2
@@ -158,7 +158,7 @@ describe H3 do
         "85283447fffffff", "8528347bfffffff", "85283463fffffff",
         "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_range_distances = H3.hex_range_distances(h3_index, k)
 
       hex_range_distances[0].should eq [h3_index]
@@ -171,7 +171,7 @@ describe H3 do
         "85283447fffffff", "8528347bfffffff", "85283463fffffff",
         "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_range_distances = H3.hex_range_distances(h3_index, k)
 
       hex_range_distances[1].size.should eq 6
@@ -184,7 +184,7 @@ describe H3 do
         "85283447fffffff", "8528347bfffffff", "85283463fffffff",
         "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_range_distances = H3.hex_range_distances(h3_index, k)
 
       hex_range_distances[1].each do |index|
@@ -217,7 +217,7 @@ describe H3 do
         "8928308280bffff", "89283082807ffff", "89283082877ffff",
         "89283082803ffff", "89283082873ffff", "8928308283bffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_ranges = H3.hex_ranges_grouped(h3_set, k)
 
       hex_ranges.size.should eq 1
@@ -231,7 +231,7 @@ describe H3 do
         "8928308280bffff", "89283082807ffff", "89283082877ffff",
         "89283082803ffff", "89283082873ffff", "8928308283bffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_ranges = H3.hex_ranges_grouped(h3_set, k)
 
       hex_ranges.keys.first.should eq h3_index
@@ -245,7 +245,7 @@ describe H3 do
         "8928308280bffff", "89283082807ffff", "89283082877ffff",
         "89283082803ffff", "89283082873ffff", "8928308283bffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_ranges = H3.hex_ranges_grouped(h3_set, k)
 
       hex_ranges[h3_index].size.should eq 2
@@ -259,7 +259,7 @@ describe H3 do
         "8928308280bffff", "89283082807ffff", "89283082877ffff",
         "89283082803ffff", "89283082873ffff", "8928308283bffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_ranges = H3.hex_ranges_grouped(h3_set, k)
 
       hex_ranges[h3_index].last.size.should eq 6
@@ -273,7 +273,7 @@ describe H3 do
         "8928308280bffff", "89283082807ffff", "89283082877ffff",
         "89283082803ffff", "89283082873ffff", "8928308283bffff",
       ].map { |i| i.to_u64(16) }
-  
+
       hex_ranges = H3.hex_ranges_grouped(h3_set, k)
 
       hex_ranges[h3_index].last.each do |index|
