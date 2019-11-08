@@ -138,37 +138,69 @@ describe H3 do
   end
 
   describe ".hex_range_distances" do
-    h3_index = "85283473fffffff".to_u64(16)
-    k = 1
-    outer_ring = [
-      "85283447fffffff", "8528347bfffffff", "85283463fffffff",
-      "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
-    ].map { |i| i.to_u64(16) }
-
-    hex_range_distances = H3.hex_range_distances(h3_index, k)
-
     it "has two range sets" do
+      h3_index = "85283473fffffff".to_u64(16)
+      k = 1
+      outer_ring = [
+        "85283447fffffff", "8528347bfffffff", "85283463fffffff",
+        "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_range_distances = H3.hex_range_distances(h3_index, k)
+
       hex_range_distances.size.should eq 2
     end
 
     it "has an inner range containing hexagons of distance 0" do
+      h3_index = "85283473fffffff".to_u64(16)
+      k = 1
+      outer_ring = [
+        "85283447fffffff", "8528347bfffffff", "85283463fffffff",
+        "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_range_distances = H3.hex_range_distances(h3_index, k)
+
       hex_range_distances[0].should eq [h3_index]
     end
 
     it "has an outer range containing hexagons of distance 1" do
+      h3_index = "85283473fffffff".to_u64(16)
+      k = 1
+      outer_ring = [
+        "85283447fffffff", "8528347bfffffff", "85283463fffffff",
+        "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_range_distances = H3.hex_range_distances(h3_index, k)
+
       hex_range_distances[1].size.should eq 6
     end
 
     it "has an outer range containing all expected indexes" do
+      h3_index = "85283473fffffff".to_u64(16)
+      k = 1
+      outer_ring = [
+        "85283447fffffff", "8528347bfffffff", "85283463fffffff",
+        "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_range_distances = H3.hex_range_distances(h3_index, k)
+
       hex_range_distances[1].each do |index|
         outer_ring.should contain(index)
       end
     end
 
     context "when there is pentagonal distortion" do
-      h3_index = "821c07fffffffff".to_u64(16)
-
       it "raises an error" do
+        h3_index = "821c07fffffffff".to_u64(16)
+        k = 1
+        outer_ring = [
+          "85283447fffffff", "8528347bfffffff", "85283463fffffff",
+          "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
+        ].map { |i| i.to_u64(16) }
+
         expect_raises(Exception) do
           hex_range_distances = H3.hex_range_distances(h3_index, k)
         end
@@ -177,43 +209,84 @@ describe H3 do
   end
 
   describe ".hex_ranges" do
-    h3_index = "8928308280fffff".to_u64(16)
-    h3_set = [h3_index]
-    k = 1
-    outer_ring = [
-      "8928308280bffff", "89283082807ffff", "89283082877ffff",
-      "89283082803ffff", "89283082873ffff", "8928308283bffff",
-    ].map { |i| i.to_u64(16) }
-
-    hex_ranges = H3.hex_ranges_grouped(h3_set, k)
-
     it "contains a single k/v pair" do
+      h3_index = "8928308280fffff".to_u64(16)
+      h3_set = [h3_index]
+      k = 1
+      outer_ring = [
+        "8928308280bffff", "89283082807ffff", "89283082877ffff",
+        "89283082803ffff", "89283082873ffff", "8928308283bffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_ranges = H3.hex_ranges_grouped(h3_set, k)
+
       hex_ranges.size.should eq 1
     end
 
     it "has one key, the h3_index" do
+      h3_index = "8928308280fffff".to_u64(16)
+      h3_set = [h3_index]
+      k = 1
+      outer_ring = [
+        "8928308280bffff", "89283082807ffff", "89283082877ffff",
+        "89283082803ffff", "89283082873ffff", "8928308283bffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_ranges = H3.hex_ranges_grouped(h3_set, k)
+
       hex_ranges.keys.first.should eq h3_index
     end
 
     it "has two ring sets" do
+      h3_index = "8928308280fffff".to_u64(16)
+      h3_set = [h3_index]
+      k = 1
+      outer_ring = [
+        "8928308280bffff", "89283082807ffff", "89283082877ffff",
+        "89283082803ffff", "89283082873ffff", "8928308283bffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_ranges = H3.hex_ranges_grouped(h3_set, k)
+
       hex_ranges[h3_index].size.should eq 2
     end
 
     it "has an outer ring containing six indexes" do
+      h3_index = "8928308280fffff".to_u64(16)
+      h3_set = [h3_index]
+      k = 1
+      outer_ring = [
+        "8928308280bffff", "89283082807ffff", "89283082877ffff",
+        "89283082803ffff", "89283082873ffff", "8928308283bffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_ranges = H3.hex_ranges_grouped(h3_set, k)
+
       hex_ranges[h3_index].last.size.should eq 6
     end
 
     it "has an outer ring containing all expected indexes" do
+      h3_index = "8928308280fffff".to_u64(16)
+      h3_set = [h3_index]
+      k = 1
+      outer_ring = [
+        "8928308280bffff", "89283082807ffff", "89283082877ffff",
+        "89283082803ffff", "89283082873ffff", "8928308283bffff",
+      ].map { |i| i.to_u64(16) }
+
+      hex_ranges = H3.hex_ranges_grouped(h3_set, k)
+
       hex_ranges[h3_index].last.each do |index|
         outer_ring.should contain index
       end
     end
 
     context "when there is pentagonal distortion" do
-      h3_index = "821c07fffffffff".to_u64(16)
-      h3_set = [h3_index]
-
       it "raises an error" do
+        h3_index = "821c07fffffffff".to_u64(16)
+        h3_set = [h3_index]
+        k = 1
+
         expect_raises(Exception) do
           hex_ranges = H3.hex_ranges_grouped(h3_set, k)
         end
