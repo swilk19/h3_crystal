@@ -5,7 +5,7 @@ module H3
     module Private
       include Types
 
-      @[Link(ldflags: "-L#{__DIR__}/../../../ext/h3-3.6.0/lib -lh3")]
+      @[Link("h3")]
       lib LibH3
         alias H3Index = UInt64
 
