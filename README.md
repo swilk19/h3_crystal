@@ -32,7 +32,7 @@ Before installing the shard, please install the build dependencies for your syst
 ## Usage
 
 ```crystal
-require "h3_crystal"
+require "h3_crystal/h3"
 ```
 
 TODO: Write usage instructions here
