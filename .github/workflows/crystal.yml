@@ -8,22 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     
     container:
-      image: crystallang/crystal:0.31.1
+      image: crystallang/crystal:1.0.0
     
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
       with:
-        submodules: true
+        repository: uber/h3
+        ref: v3.6.0
+        path: h3-3.6.0
     - name: Install dependencies
       run: |
         apt-get update -y
         apt-get install cmake make gcc libtool -y
-        make -C ext
-        shards install
+        cd h3-3.6.0; cmake .; make install
+        cd ..; shards install
     - name: Linting
       run: |
         crystal tool format --check
     - name: Run tests
       run: |
-        export LD_LIBRARY_PATH=`cd ext/h3/lib && pwd`:$LD_LIBRARY_PATH
-        crystal spec
+        crystal spec --verbose
