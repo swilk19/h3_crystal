@@ -65,7 +65,7 @@ module H3
         fun h3_to_children = h3ToChildren(h3_index : H3Index, res : Int32, h3_indexes_out : H3Index*) : Void
         fun compact = compact(h3_set : H3Index*, compacted_set : H3Index*, size : Int32) : Bool
         fun max_uncompact_size = maxUncompactSize(h3_set : H3Index*, size : LibC::SizeT, res : Int32) : Int32
-        fun uncompact = uncompact(h3_set : H3Index*, size : LibC::SizeT, h3_indexes_out : H3Index*, size : LibC::SizeT, res : Int32) : Bool
+        fun uncompact = uncompact(h3_set : H3Index*, size : LibC::SizeT, h3_indexes_out : H3Index*, max_size : LibC::SizeT, res : Int32) : Bool
         fun center_child = h3ToCenterChild(h3_index : H3Index, res : Int32) : UInt64
       end
 
