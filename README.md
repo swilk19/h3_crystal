@@ -33,9 +33,24 @@ Before installing the shard, please install the build dependencies for your syst
 
 ```crystal
 require "h3_crystal/h3"
+
+# Convert coordinates to an H3 index
+index = H3.from_geo_coordinates({40.689167, -74.044444}, 8)
+# => 613229551440363519
+
+# Inspect the index
+H3.valid?(index)     # => true
+H3.resolution(index) # => 8
+
+# Convert back to coordinates
+H3.to_geo_coordinates(index)
+# => {40.68762931583634, -74.04099997186306}
+
+# Find neighboring hexagons
+H3.k_ring(index, 1) # => 7 hexagons
 ```
 
-TODO: Write usage instructions here
+All public methods are called as `H3.method_name`. See the [H3 documentation](https://uber.github.io/h3/#/documentation/overview/introduction) for details on available operations.
 
 ## Development
 
