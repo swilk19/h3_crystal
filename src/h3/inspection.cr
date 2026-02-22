@@ -47,7 +47,9 @@ module Inspection
   #
   # @return [Integer] H3 index
   def from_string(h3_string : String) : UInt64
-    LibH3.from_string(h3_string)
+    h3_index = 0_u64
+    LibH3.from_string(h3_string, pointerof(h3_index))
+    h3_index
   end
 
   # @!method pentagon?(h3_index)
@@ -62,7 +64,7 @@ module Inspection
   #
   # @return [Boolean] True if the H3 index is a pentagon.
   def pentagon?(h3_index : UInt64) : Bool
-    LibH3.pentagon?(h3_index)
+    LibH3.pentagon?(h3_index) != 0
   end
 
   # @!method class_3_resolution?(h3_index)
@@ -78,7 +80,7 @@ module Inspection
   #
   # @return [Boolean] True if the H3 index has a class III resolution.
   def class_3_resolution?(h3_index : UInt64) : Bool
-    LibH3.class_3_resolution?(h3_index)
+    LibH3.class_3_resolution?(h3_index) != 0
   end
 
   # @!method valid?(h3_index)
@@ -93,7 +95,7 @@ module Inspection
   #
   # @return [Boolean] True if the H3 index is valid.
   def valid?(h3_index : UInt64) : Bool
-    LibH3.valid?(h3_index)
+    LibH3.valid?(h3_index) != 0
   end
 
   # Derives the hexadecimal string representation for a given H3 index.
@@ -123,7 +125,9 @@ module Inspection
   #
   # @return [Integer] Maximum possible number of faces
   def max_face_count(h3_index : UInt64) : Int32
-    LibH3.max_face_count(h3_index)
+    count = 0_i32
+    LibH3.max_face_count(h3_index, pointerof(count))
+    count
   end
 
   # @!method faces(h3_index)
