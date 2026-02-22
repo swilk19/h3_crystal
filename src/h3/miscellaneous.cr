@@ -159,6 +159,59 @@ module Miscellaneous
     Array(UInt64).new(count) { |i| output[i] }
   end
 
+  # @!method describe_h3_error(err)
+  #
+  # Provide a human-readable description of an H3Error error code.
+  #
+  # @param [Integer] err H3 error code.
+  #
+  # @example Describe error code 1
+  #   H3.describe_h3_error(1)
+  #   "The operation failed but a more specific error is not available"
+  #
+  # @return [String] Human-readable error description.
+  def describe_h3_error(err : UInt32) : String
+    String.new(LibH3.describe_h3_error(err))
+  end
+
+  # @!method valid_index?(h3_index)
+  #
+  # Determine whether the given H3 index is valid.
+  # Unlike valid? (isValidCell), this validates any H3 index type
+  # including cells, directed edges, and vertices.
+  #
+  # @param [Integer] h3_index A H3 index.
+  #
+  # @example Check if H3 index is valid
+  #   H3.valid_index?(612933930963697663)
+  #   true
+  #
+  # @return [Boolean] True if the H3 index is valid.
+  def valid_index?(h3_index : UInt64) : Bool
+    LibH3.is_valid_index(h3_index) != 0
+  end
+
+  # @!method get_index_digit(h3_index, resolution)
+  #
+  # Returns the index digit at the given resolution.
+  # Resolution starts at 1 and goes up to 15.
+  # The digit represents the direction from the parent cell at that resolution.
+  #
+  # @param [Integer] h3_index A valid H3 index.
+  # @param [Integer] resolution Resolution level (1-15).
+  #
+  # @example Get the index digit at resolution 8
+  #   H3.get_index_digit(612933930963697663, 8)
+  #   0
+  #
+  # @return [Integer] The index digit at the given resolution.
+  def get_index_digit(h3_index : UInt64, resolution : Int32) : Int32
+    digit = 0_i32
+    err = LibH3.get_index_digit(h3_index, resolution, pointerof(digit))
+    raise Exception.new("Failed to get index digit") if err != 0
+    digit
+  end
+
   # Returns all pentagon indexes at the given resolution.
   #
   # @example Return all pentagons at resolution 4.

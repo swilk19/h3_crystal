@@ -402,6 +402,26 @@ describe H3 do
     end
   end
 
+  describe ".max_grid_ring_size" do
+    it "returns 1 for k = 0" do
+      H3.max_grid_ring_size(0).should eq(1)
+    end
+
+    it "returns 6 for k = 1" do
+      H3.max_grid_ring_size(1).should eq(6)
+    end
+
+    it "returns 36 for k = 6" do
+      H3.max_grid_ring_size(6).should eq(36)
+    end
+
+    it "matches max_hex_ring_size for various k values" do
+      (0..10).each do |k|
+        H3.max_grid_ring_size(k).should eq(H3.max_hex_ring_size(k))
+      end
+    end
+  end
+
   describe ".distance" do
     origin = "89283082993ffff".to_u64(16)
     destination = "89283082827ffff".to_u64(16)

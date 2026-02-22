@@ -170,6 +170,25 @@ module Traversal
     k.zero? ? 1 : 6 * k
   end
 
+  # @!method max_grid_ring_size(k)
+  #
+  # Derive the maximum grid ring size for a given distance k.
+  # Uses the official H3 C library function maxGridRingSize.
+  #
+  # @param [Integer] k K distance.
+  #
+  # @example Derive maximum grid ring size for k distance 6.
+  #   H3.max_grid_ring_size(6)
+  #   36
+  #
+  # @return [Integer] Maximum grid ring size.
+  def max_grid_ring_size(k : Int32) : Int32
+    size = 0_i64
+    err = LibH3.max_grid_ring_size(k, pointerof(size))
+    raise Exception.new("Failed to compute max grid ring size") if err != 0
+    size.to_i
+  end
+
   # Derives H3 indexes within k distance for each H3 index in the set.
   #
   # @param [Array<Integer>] h3_set Set of H3 indexes
