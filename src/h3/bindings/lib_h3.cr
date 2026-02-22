@@ -109,6 +109,19 @@ module H3
         fun polygon_to_cells = polygonToCells(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : H3Index*) : H3Error
         fun cells_to_linked_multi_polygon = cellsToLinkedMultiPolygon(h3_set : H3Index*, num_hexes : Int32, out : Pointer(LinkedGeoPolygon)) : H3Error
         fun destroy_linked_multi_polygon = destroyLinkedMultiPolygon(polygon : Pointer(LinkedGeoPolygon)) : Void
+
+        # Directed Edges
+        fun are_neighbor_cells = areNeighborCells(origin : H3Index, destination : H3Index, out : Int32*) : H3Error
+        fun cells_to_directed_edge = cellsToDirectedEdge(origin : H3Index, destination : H3Index, out : H3Index*) : H3Error
+        fun is_valid_directed_edge = isValidDirectedEdge(edge : H3Index) : Int32
+        fun get_directed_edge_origin = getDirectedEdgeOrigin(edge : H3Index, out : H3Index*) : H3Error
+        fun get_directed_edge_destination = getDirectedEdgeDestination(edge : H3Index, out : H3Index*) : H3Error
+        fun directed_edge_to_cells = directedEdgeToCells(edge : H3Index, origin_destination : H3Index*) : H3Error
+        fun origin_to_directed_edges = originToDirectedEdges(origin : H3Index, edges : H3Index*) : H3Error
+        fun directed_edge_to_boundary = directedEdgeToBoundary(edge : H3Index, gb : Pointer(CellBoundary)) : H3Error
+        fun exact_edge_length_rads = edgeLengthRads(edge : H3Index, length : Float64*) : H3Error
+        fun exact_edge_length_km = edgeLengthKm(edge : H3Index, length : Float64*) : H3Error
+        fun exact_edge_length_m = edgeLengthM(edge : H3Index, length : Float64*) : H3Error
       end
 
       def read_array_of_uint64(ptr : Pointer(UInt64), size : Int) : Array(UInt64)
