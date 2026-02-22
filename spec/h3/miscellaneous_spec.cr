@@ -166,4 +166,73 @@ describe H3 do
       distance.should eq(0.0)
     end
   end
+
+  describe ".describe_h3_error" do
+    it "returns 'Success' for error code 0" do
+      H3.describe_h3_error(0_u32).should eq("Success")
+    end
+
+    it "returns a meaningful description for error code 1" do
+      result = H3.describe_h3_error(1_u32)
+      result.should eq("The operation failed but a more specific error is not available")
+    end
+
+    it "returns a meaningful description for error code 2" do
+      result = H3.describe_h3_error(2_u32)
+      result.should eq("Argument was outside of acceptable range")
+    end
+
+    it "returns 'Invalid error code' for an unknown error code" do
+      result = H3.describe_h3_error(9999_u32)
+      result.should eq("Invalid error code")
+    end
+  end
+
+  describe ".valid_index?" do
+    it "returns true for a valid cell index" do
+      H3.valid_index?(UInt64.new(H3_VALID_INDEX)).should be_true
+    end
+
+    it "returns false for an invalid index" do
+      H3.valid_index?(0_u64).should be_false
+    end
+
+    it "returns false for value 1" do
+      H3.valid_index?(1_u64).should be_false
+    end
+
+    context "when given a valid directed edge" do
+      it "returns true" do
+        h3_index = "8928308280fffff".to_u64(16)
+        neighbors = H3.k_ring(h3_index, 1)
+        neighbor = neighbors.reject { |n| n == h3_index }.first
+        edge = H3.cells_to_directed_edge(h3_index, neighbor)
+        H3.valid_index?(edge).should be_true
+      end
+    end
+  end
+
+  describe ".get_index_digit" do
+    it "returns a digit between 0 and 7 for a valid index and resolution" do
+      h3_index = UInt64.new(H3_VALID_INDEX)
+      res = H3.resolution(h3_index)
+      digit = H3.get_index_digit(h3_index, res)
+      digit.should be >= 0
+      digit.should be <= 7
+    end
+
+    it "returns a consistent digit for known index at resolution 1" do
+      h3_index = UInt64.new(H3_VALID_INDEX)
+      digit = H3.get_index_digit(h3_index, 1)
+      digit.should be >= 0
+      digit.should be <= 7
+    end
+
+    it "raises an error for invalid resolution 0" do
+      h3_index = UInt64.new(H3_VALID_INDEX)
+      expect_raises(Exception) do
+        H3.get_index_digit(h3_index, 0)
+      end
+    end
+  end
 end

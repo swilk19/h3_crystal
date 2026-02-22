@@ -75,6 +75,9 @@ module H3
         fun great_circle_distance_rads = greatCircleDistanceRads(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
         fun great_circle_distance_km = greatCircleDistanceKm(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
         fun great_circle_distance_m = greatCircleDistanceM(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
+        fun describe_h3_error = describeH3Error(err : H3Error) : LibC::Char*
+        fun is_valid_index = isValidIndex(h : H3Index) : Int32
+        fun get_index_digit = getIndexDigit(h : H3Index, res : Int32, out : Int32*) : H3Error
 
         # Indexing
         fun lat_lng_to_cell = latLngToCell(g : Pointer(LatLng), res : Int32, out : H3Index*) : H3Error
@@ -94,6 +97,7 @@ module H3
 
         # Traversal
         fun max_grid_disk_size = maxGridDiskSize(k : Int32, out : Int64*) : H3Error
+        fun max_grid_ring_size = maxGridRingSize(k : Int32, out : Int64*) : H3Error
         fun hex_ring = gridRingUnsafe(h3_index : H3Index, k_distance : Int32, output : H3Index*) : H3Error
         fun k_ring = gridDisk(h3_index : H3Index, k_distance : Int32, output : H3Index*) : H3Error
         fun k_ring_distances = gridDiskDistances(h3_index : H3Index, k_distance : Int32, h3_indexes_out : H3Index*, distances : Int32*) : H3Error
