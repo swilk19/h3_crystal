@@ -93,4 +93,77 @@ describe H3 do
       pentagons.should eq(expected)
     end
   end
+
+  describe ".cell_area_rads2" do
+    it "returns a positive area for a valid cell" do
+      area = H3.cell_area_rads2(H3_VALID_INDEX.to_u64)
+      area.should be > 0.0
+    end
+  end
+
+  describe ".cell_area_km2" do
+    it "returns a positive area for a valid cell" do
+      area = H3.cell_area_km2(H3_VALID_INDEX.to_u64)
+      area.should be > 0.0
+    end
+  end
+
+  describe ".cell_area_m2" do
+    it "returns a positive area for a valid cell" do
+      area = H3.cell_area_m2(H3_VALID_INDEX.to_u64)
+      area.should be > 0.0
+    end
+
+    it "is consistent with km2 measurement" do
+      area_m2 = H3.cell_area_m2(H3_VALID_INDEX.to_u64)
+      area_km2 = H3.cell_area_km2(H3_VALID_INDEX.to_u64)
+      (area_m2 / 1_000_000.0).should be_close(area_km2, 0.0001)
+    end
+  end
+
+  describe ".great_circle_distance_rads" do
+    it "returns the correct distance between two points" do
+      distance = H3.great_circle_distance_rads(0.0, 0.0, 1.0, 0.0)
+      distance.should be > 0.0
+      distance.should be_close(0.017453292519943295, 0.0001)
+    end
+
+    it "returns zero for the same point" do
+      distance = H3.great_circle_distance_rads(40.0, -74.0, 40.0, -74.0)
+      distance.should eq(0.0)
+    end
+  end
+
+  describe ".great_circle_distance_km" do
+    it "returns the correct distance between two points" do
+      # Distance from equator at (0,0) to (1,0) should be ~111.195 km
+      distance = H3.great_circle_distance_km(0.0, 0.0, 1.0, 0.0)
+      distance.should be > 0.0
+      distance.should be_close(111.195, 0.1)
+    end
+
+    it "returns zero for the same point" do
+      distance = H3.great_circle_distance_km(40.0, -74.0, 40.0, -74.0)
+      distance.should eq(0.0)
+    end
+  end
+
+  describe ".great_circle_distance_m" do
+    it "returns the correct distance between two points" do
+      distance = H3.great_circle_distance_m(0.0, 0.0, 1.0, 0.0)
+      distance.should be > 0.0
+      distance.should be_close(111195.0, 100.0)
+    end
+
+    it "is consistent with km measurement" do
+      distance_m = H3.great_circle_distance_m(0.0, 0.0, 1.0, 0.0)
+      distance_km = H3.great_circle_distance_km(0.0, 0.0, 1.0, 0.0)
+      (distance_m / 1000.0).should be_close(distance_km, 0.0001)
+    end
+
+    it "returns zero for the same point" do
+      distance = H3.great_circle_distance_m(40.0, -74.0, 40.0, -74.0)
+      distance.should eq(0.0)
+    end
+  end
 end
