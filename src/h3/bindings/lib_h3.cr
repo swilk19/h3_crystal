@@ -19,6 +19,39 @@ module H3
           verts : LatLng[10]
         end
 
+        struct GeoLoop
+          num_verts : Int32
+          verts : Pointer(LatLng)
+        end
+
+        struct GeoPolygon
+          geoloop : GeoLoop
+          num_holes : Int32
+          holes : Pointer(GeoLoop)
+        end
+
+        struct GeoMultiPolygon
+          num_polygons : Int32
+          polygons : Pointer(GeoPolygon)
+        end
+
+        struct LinkedLatLng
+          vertex : LatLng
+          next : Pointer(LinkedLatLng)
+        end
+
+        struct LinkedGeoLoop
+          first : Pointer(LinkedLatLng)
+          last : Pointer(LinkedLatLng)
+          next : Pointer(LinkedGeoLoop)
+        end
+
+        struct LinkedGeoPolygon
+          first : Pointer(LinkedGeoLoop)
+          last : Pointer(LinkedGeoLoop)
+          next : Pointer(LinkedGeoPolygon)
+        end
+
         # Misc
         fun degs_to_rads = degsToRads(degrees : Float64) : Float64
         fun rads_to_degs = radsToDegs(rads : Float64) : Float64
@@ -70,6 +103,12 @@ module H3
         fun center_child = cellToCenterChild(h3_index : H3Index, res : Int32, out : H3Index*) : H3Error
         fun cell_to_child_pos = cellToChildPos(child : H3Index, parent_res : Int32, out : Int64*) : H3Error
         fun child_pos_to_cell = childPosToCell(child_pos : Int64, parent : H3Index, child_res : Int32, out : H3Index*) : H3Error
+
+        # Polygon
+        fun max_polygon_to_cells_size = maxPolygonToCellsSize(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : Int64*) : H3Error
+        fun polygon_to_cells = polygonToCells(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : H3Index*) : H3Error
+        fun cells_to_linked_multi_polygon = cellsToLinkedMultiPolygon(h3_set : H3Index*, num_hexes : Int32, out : Pointer(LinkedGeoPolygon)) : H3Error
+        fun destroy_linked_multi_polygon = destroyLinkedMultiPolygon(polygon : Pointer(LinkedGeoPolygon)) : Void
       end
 
       def read_array_of_uint64(ptr : Pointer(UInt64), size : Int) : Array(UInt64)
