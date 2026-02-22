@@ -9,6 +9,7 @@ require "./h3/inspection"
 require "./h3/traversal"
 require "./h3/hierarchy"
 require "./h3/polygon"
+require "./h3/edge"
 
 module H3
   VERSION = "4.4.1"
@@ -19,4 +20,5 @@ module H3
   extend Traversal
   extend Hierarchy
   extend Polygon
+  extend Edge
 end
