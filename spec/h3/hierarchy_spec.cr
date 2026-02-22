@@ -194,4 +194,66 @@ describe H3 do
 
     it { center_child.should eq result }
   end
+
+  describe ".cell_to_child_pos" do
+    h3_index = "8928308280fffff".to_u64(16)
+    parent_resolution = 8
+
+    child_pos = H3.cell_to_child_pos(h3_index, parent_resolution)
+
+    it "returns a non-negative position" do
+      child_pos.should be >= 0
+    end
+
+    context "when the child is the center child of its parent" do
+      parent = H3.parent(h3_index, parent_resolution)
+      center = H3.center_child(parent, 9)
+      center_pos = H3.cell_to_child_pos(center, parent_resolution)
+
+      it "returns position 0 for the center child" do
+        center_pos.should eq 0
+      end
+    end
+
+    context "when the resolution is invalid" do
+      it "raises an error" do
+        expect_raises(Exception) do
+          H3.cell_to_child_pos(h3_index, 16)
+        end
+      end
+    end
+  end
+
+  describe ".child_pos_to_cell" do
+    h3_index = "8928308280fffff".to_u64(16)
+    parent_resolution = 8
+    child_resolution = 9
+
+    parent = H3.parent(h3_index, parent_resolution)
+
+    context "when position is 0" do
+      child = H3.child_pos_to_cell(0_i64, parent, child_resolution)
+
+      it "returns the center child" do
+        child.should eq H3.center_child(parent, child_resolution)
+      end
+    end
+
+    context "round-trip: cell_to_child_pos then child_pos_to_cell" do
+      pos = H3.cell_to_child_pos(h3_index, parent_resolution)
+      recovered = H3.child_pos_to_cell(pos, parent, child_resolution)
+
+      it "recovers the original child cell" do
+        recovered.should eq h3_index
+      end
+    end
+
+    context "when the resolution is invalid" do
+      it "raises an error" do
+        expect_raises(Exception) do
+          H3.child_pos_to_cell(0_i64, parent, 16)
+        end
+      end
+    end
+  end
 end

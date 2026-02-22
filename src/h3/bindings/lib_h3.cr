@@ -68,6 +68,8 @@ module H3
         fun max_uncompact_size = uncompactCellsSize(h3_set : H3Index*, size : Int64, res : Int32, out : Int64*) : H3Error
         fun uncompact = uncompactCells(h3_set : H3Index*, size : Int64, h3_indexes_out : H3Index*, max_hexes : Int64, res : Int32) : H3Error
         fun center_child = cellToCenterChild(h3_index : H3Index, res : Int32, out : H3Index*) : H3Error
+        fun cell_to_child_pos = cellToChildPos(child : H3Index, parent_res : Int32, out : Int64*) : H3Error
+        fun child_pos_to_cell = childPosToCell(child_pos : Int64, parent : H3Index, child_res : Int32, out : H3Index*) : H3Error
       end
 
       def read_array_of_uint64(ptr : Pointer(UInt64), size : Int) : Array(UInt64)

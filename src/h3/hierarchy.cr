@@ -174,4 +174,47 @@ module Hierarchy
 
     read_array_of_uint64(output, max_size)
   end
+
+  # Returns the position of the child cell within an ordered list of all
+  # children of the child's parent at the given resolution.
+  #
+  # @param [Integer] child A valid H3 child index.
+  # @param [Integer] parent_resolution The resolution of the parent.
+  #
+  # @example Get the position of a child within its parent's children.
+  #   H3.cell_to_child_pos(617700169982672895, 8)
+  #   0
+  #
+  # @raise [Exception] If the function fails (e.g., invalid resolution).
+  #
+  # @return [Integer] Position of child within parent's children.
+  def cell_to_child_pos(child : UInt64, parent_resolution : Int32) : Int64
+    result = 0_i64
+    err = LibH3.cell_to_child_pos(child, Resolution.new(parent_resolution), pointerof(result))
+    raise Exception.new("Couldn't get child position") if err != 0
+
+    result
+  end
+
+  # Returns the child cell at the given position within an ordered list of
+  # all children of the given parent cell at the given resolution.
+  #
+  # @param [Integer] child_pos The position of the child.
+  # @param [Integer] parent A valid H3 parent index.
+  # @param [Integer] child_resolution The resolution of the child.
+  #
+  # @example Get the child cell at a given position.
+  #   H3.child_pos_to_cell(0, 613196570357137407, 9)
+  #   617700169982672895
+  #
+  # @raise [Exception] If the function fails (e.g., invalid resolution or position).
+  #
+  # @return [Integer] H3 index of child cell at the given position.
+  def child_pos_to_cell(child_pos : Int64, parent : UInt64, child_resolution : Int32) : UInt64
+    result = 0_u64
+    err = LibH3.child_pos_to_cell(child_pos, parent, Resolution.new(child_resolution), pointerof(result))
+    raise Exception.new("Couldn't get child cell from position") if err != 0
+
+    result
+  end
 end
