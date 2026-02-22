@@ -64,6 +64,12 @@ module H3
         fun res_0_cells = getRes0Cells(h3_indexes_out : H3Index*) : H3Error
         fun base_cell_count = res0CellCount : Int32
         fun get_pentagons = getPentagons(res : Int32, h3_indexes_out : H3Index*) : H3Error
+        fun cell_area_rads2 = cellAreaRads2(h3_index : H3Index, out : Float64*) : H3Error
+        fun cell_area_km2 = cellAreaKm2(h3_index : H3Index, out : Float64*) : H3Error
+        fun cell_area_m2 = cellAreaM2(h3_index : H3Index, out : Float64*) : H3Error
+        fun great_circle_distance_rads = greatCircleDistanceRads(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
+        fun great_circle_distance_km = greatCircleDistanceKm(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
+        fun great_circle_distance_m = greatCircleDistanceM(a : Pointer(LatLng), b : Pointer(LatLng)) : Float64
 
         # Indexing
         fun lat_lng_to_cell = latLngToCell(g : Pointer(LatLng), res : Int32, out : H3Index*) : H3Error

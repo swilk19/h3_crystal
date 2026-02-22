@@ -172,4 +172,121 @@ module Miscellaneous
     LibH3.get_pentagons(resolution, output)
     Array(UInt64).new(count) { |i| output[i] }
   end
+
+  # @!method cell_area_rads2(h3_index)
+  #
+  # Exact area of a specific cell in square radians.
+  #
+  # @param [Integer] h3_index A valid H3 index.
+  #
+  # @example Get exact area in square radians.
+  #   H3.cell_area_rads2(612933930963697663)
+  #   1.234e-10
+  #
+  # @return [Float] Exact area of the cell in square radians.
+  def cell_area_rads2(h3_index : UInt64) : Float64
+    area = 0.0
+    err = LibH3.cell_area_rads2(h3_index, pointerof(area))
+    raise Exception.new("Couldn't get cell area in square radians") if err != 0
+    area
+  end
+
+  # @!method cell_area_km2(h3_index)
+  #
+  # Exact area of a specific cell in square kilometres.
+  #
+  # @param [Integer] h3_index A valid H3 index.
+  #
+  # @example Get exact area in square kilometres.
+  #   H3.cell_area_km2(612933930963697663)
+  #   0.1234
+  #
+  # @return [Float] Exact area of the cell in square kilometres.
+  def cell_area_km2(h3_index : UInt64) : Float64
+    area = 0.0
+    err = LibH3.cell_area_km2(h3_index, pointerof(area))
+    raise Exception.new("Couldn't get cell area in square kilometres") if err != 0
+    area
+  end
+
+  # @!method cell_area_m2(h3_index)
+  #
+  # Exact area of a specific cell in square metres.
+  #
+  # @param [Integer] h3_index A valid H3 index.
+  #
+  # @example Get exact area in square metres.
+  #   H3.cell_area_m2(612933930963697663)
+  #   123400.0
+  #
+  # @return [Float] Exact area of the cell in square metres.
+  def cell_area_m2(h3_index : UInt64) : Float64
+    area = 0.0
+    err = LibH3.cell_area_m2(h3_index, pointerof(area))
+    raise Exception.new("Couldn't get cell area in square metres") if err != 0
+    area
+  end
+
+  # @!method great_circle_distance_rads(lat1, lng1, lat2, lng2)
+  #
+  # Compute the great circle distance in radians between two points.
+  # Coordinates are provided in degrees and converted to radians internally.
+  #
+  # @param [Float] lat1 Latitude of the first point in degrees.
+  # @param [Float] lng1 Longitude of the first point in degrees.
+  # @param [Float] lat2 Latitude of the second point in degrees.
+  # @param [Float] lng2 Longitude of the second point in degrees.
+  #
+  # @example Compute great circle distance in radians.
+  #   H3.great_circle_distance_rads(0.0, 0.0, 1.0, 0.0)
+  #   0.01745
+  #
+  # @return [Float] Great circle distance in radians.
+  def great_circle_distance_rads(lat1 : Float64, lng1 : Float64, lat2 : Float64, lng2 : Float64) : Float64
+    a = LibH3::LatLng.new(lat: degs_to_rads(lat1), lng: degs_to_rads(lng1))
+    b = LibH3::LatLng.new(lat: degs_to_rads(lat2), lng: degs_to_rads(lng2))
+    LibH3.great_circle_distance_rads(pointerof(a), pointerof(b))
+  end
+
+  # @!method great_circle_distance_km(lat1, lng1, lat2, lng2)
+  #
+  # Compute the great circle distance in kilometres between two points.
+  # Coordinates are provided in degrees and converted to radians internally.
+  #
+  # @param [Float] lat1 Latitude of the first point in degrees.
+  # @param [Float] lng1 Longitude of the first point in degrees.
+  # @param [Float] lat2 Latitude of the second point in degrees.
+  # @param [Float] lng2 Longitude of the second point in degrees.
+  #
+  # @example Compute great circle distance in kilometres.
+  #   H3.great_circle_distance_km(0.0, 0.0, 1.0, 0.0)
+  #   111.195
+  #
+  # @return [Float] Great circle distance in kilometres.
+  def great_circle_distance_km(lat1 : Float64, lng1 : Float64, lat2 : Float64, lng2 : Float64) : Float64
+    a = LibH3::LatLng.new(lat: degs_to_rads(lat1), lng: degs_to_rads(lng1))
+    b = LibH3::LatLng.new(lat: degs_to_rads(lat2), lng: degs_to_rads(lng2))
+    LibH3.great_circle_distance_km(pointerof(a), pointerof(b))
+  end
+
+  # @!method great_circle_distance_m(lat1, lng1, lat2, lng2)
+  #
+  # Compute the great circle distance in metres between two points.
+  # Coordinates are provided in degrees and converted to radians internally.
+  #
+  # @param [Float] lat1 Latitude of the first point in degrees.
+  # @param [Float] lng1 Longitude of the first point in degrees.
+  # @param [Float] lat2 Latitude of the second point in degrees.
+  # @param [Float] lng2 Longitude of the second point in degrees.
+  #
+  # @example Compute great circle distance in metres.
+  #   H3.great_circle_distance_m(0.0, 0.0, 1.0, 0.0)
+  #   111195.0
+  #
+  # @return [Float] Great circle distance in metres.
+  def great_circle_distance_m(lat1 : Float64, lng1 : Float64, lat2 : Float64, lng2 : Float64) : Float64
+    a = LibH3::LatLng.new(lat: degs_to_rads(lat1), lng: degs_to_rads(lng1))
+    b = LibH3::LatLng.new(lat: degs_to_rads(lat2), lng: degs_to_rads(lng2))
+    LibH3.great_circle_distance_m(pointerof(a), pointerof(b))
+  end
 end
