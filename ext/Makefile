@@ -1,6 +1,9 @@
 make:
-	cd h3-3.6.0; cmake . -DBUILD_SHARED_LIBS=false -DBUILD_FILTERS=OFF -DBUILD_BENCHMARKS=OFF; make
-install:
-	: # do nothing, we'll load the lib directly
+	mkdir -p h3/build && cd h3/build && cmake .. \
+		-DBUILD_SHARED_LIBS=OFF -DBUILD_TESTING=OFF \
+		-DBUILD_FILTERS=OFF -DBUILD_BENCHMARKS=OFF \
+		-DBUILD_FUZZERS=OFF -DBUILD_GENERATORS=OFF \
+		-DENABLE_FORMAT=OFF -DENABLE_LINTING=OFF -DENABLE_DOCS=OFF \
+		&& make h3
 clean:
-	: # do nothing, cleanup happens when shard uninstalled
+	rm -rf h3/build

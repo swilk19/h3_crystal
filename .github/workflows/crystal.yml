@@ -16,8 +16,12 @@ jobs:
       run: |
         apt-get update -y
         apt-get install cmake make gcc libtool -y
-        make -C ext
-        shards install
+    - name: Check cmake version
+      run: cmake --version
+    - name: Build H3 C library
+      run: make -C ext
+    - name: Install shards
+      run: shards install
     - name: Linting
       run: |
         crystal tool format --check

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Crystal language bindings for Uber's H3 hexagonal spatial indexing library. Currently wraps H3 C v3.6.0 via Crystal's FFI (`lib` declarations), with a migration to H3 v4.4.1 in progress. The H3 C source is bundled in `ext/`.
+Crystal language bindings for Uber's [H3 hexagonal spatial indexing library](https://h3geo.org/). Wraps H3 C v4.4.1 via Crystal's FFI (`lib` declarations). The H3 C source is bundled in `ext/h3/`.
 
 ## Tooling
 
@@ -16,7 +16,7 @@ Crystal language bindings for Uber's H3 hexagonal spatial indexing library. Curr
 ```bash
 mise install                      # Install Crystal version from .mise.toml
 shards install                    # Install deps + build C library (postinstall hook runs make -C ext)
-make -C ext                       # Rebuild just the C extension
+make -C ext                       # Rebuild just the C extension (produces ext/h3/build/lib/libh3.a)
 crystal spec --verbose            # Run all tests
 crystal tool format --check       # Check formatting (CI uses this)
 crystal tool format               # Auto-format code
@@ -26,17 +26,17 @@ crystal tool format               # Auto-format code
 
 The library exposes a single `H3` module that extends four functional modules, each wrapping a category of H3 C functions:
 
-- **Indexing** (`src/h3/indexing.cr`) — coordinate-to-H3 conversions (`geo_to_h3`, `h3_to_geo`, `h3_to_boundary`)
-- **Inspection** (`src/h3/inspection.cr`) — validation and properties (`valid?`, `pentagon?`, `resolution`, `to_string`)
-- **Traversal** (`src/h3/traversal.cr`) — neighbors and paths (`k_ring`, `hex_range`, `line`, `distance`)
-- **Hierarchy** (`src/h3/hierarchy.cr`) — parent/child operations (`parent`, `children`, `compact`, `uncompact`)
+- **Indexing** (`src/h3/indexing.cr`) — coordinate-to-H3 conversions (`latLngToCell`, `cellToLatLng`, `cellToBoundary`)
+- **Inspection** (`src/h3/inspection.cr`) — validation and properties (`isValidCell`, `isPentagon`, `getResolution`, `h3ToString`)
+- **Traversal** (`src/h3/traversal.cr`) — neighbors and paths (`gridDisk`, `gridDiskUnsafe`, `gridPathCells`, `gridDistance`)
+- **Hierarchy** (`src/h3/hierarchy.cr`) — parent/child operations (`cellToParent`, `cellToChildren`, `compactCells`, `uncompactCells`)
 
 Supporting layers:
-- `src/h3/bindings/lib_h3.cr` — raw C FFI declarations with static linking (`@[Link(ldflags: "...libh3.a -lm")]`)
+- `src/h3/bindings/lib_h3.cr` — raw C FFI declarations with static linking (`@[Link(ldflags: "...ext/h3/build/lib/libh3.a -lm")]`)
 - `src/h3/bindings/types.cr` — `Resolution` class (validates 0–15 range, implements `to_unsafe` for C interop)
 - `src/h3/bindings/base.cr` — base module setup; also includes `Miscellaneous` which provides utility functions shared across all modules
 
-All public methods are called as `H3.method_name`.
+All public methods are called as `H3.method_name`. Crystal-side method names are unchanged from v3 for API compatibility.
 
 ## Consumer Usage
 
@@ -48,8 +48,10 @@ Tests are in `spec/h3/` organized to mirror the module structure. They use Cryst
 
 ## Key Patterns
 
+- H3 v4 functions return `H3Error` (UInt32) with outputs via pointer params; wrappers check `!= 0` for errors
 - Geo coordinates are converted between degrees (Crystal API) and radians (C API) at the binding boundary
 - C arrays are allocated with `Pointer.malloc` and read back with `read_array_of_uint64`/`read_array_of_int32` helpers
+- Bool predicates in v4 return `Int32` (0/1); wrappers convert with `!= 0`
 
 ## Versioning
 

@@ -3,14 +3,14 @@
 #
 # All public methods for the library are defined here.
 #
-# @see https://uber.github.io/h3/#/documentation/overview/introduction
+# @see https://h3geo.org/docs/
 require "./h3/indexing"
 require "./h3/inspection"
 require "./h3/traversal"
 require "./h3/hierarchy"
 
 module H3
-  VERSION = "3.6.0"
+  VERSION = "4.4.1"
 
   # TODO: Put code here
   extend Indexing

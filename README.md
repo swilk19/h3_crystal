@@ -4,17 +4,17 @@
 
 ![build](https://github.com/swilk19/h3_crystal/workflows/build/badge.svg)
 
-Crystal-to-C bindings for Uber's [H3 library](https://uber.github.io/h3/).
+Crystal-to-C bindings for Uber's [H3 library](https://h3geo.org/).
 
-Please consult [the H3 documentation](https://uber.github.io/h3/#/documentation/overview/introduction) for a full explanation of terminology and concepts.
+Please consult [the H3 documentation](https://h3geo.org/docs/) for a full explanation of terminology and concepts.
 
 ## Supported H3 Versions
 
-The semantic versioning of this shard matches the versioning of the H3 C library. E.g. version `3.5.x` of this shard is targeted for version `3.5.y` of H3 C lib where `x` and `y` are independent patch levels.
+The semantic versioning of this shard matches the versioning of the H3 C library. E.g. version `4.4.x` of this shard is targeted for version `4.4.y` of H3 C lib where `x` and `y` are independent patch levels.
 
 ## Getting Started
 
-Before installing the shard, please install the build dependencies for your system as instructed here: https://github.com/uber/h3#install-build-time-dependencies
+Before installing the shard, please install the build dependencies for your system as instructed here: https://github.com/uber/h3/blob/v4.4.1/README.md#install-build-time-dependencies
 
 
 ## Installation
@@ -50,7 +50,7 @@ H3.to_geo_coordinates(index)
 H3.k_ring(index, 1) # => 7 hexagons
 ```
 
-All public methods are called as `H3.method_name`. See the [H3 documentation](https://uber.github.io/h3/#/documentation/overview/introduction) for details on available operations.
+All public methods are called as `H3.method_name`. See the [H3 documentation](https://h3geo.org/docs/) for details on available operations.
 
 ## Development
 

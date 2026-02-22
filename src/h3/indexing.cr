@@ -19,18 +19,21 @@ module Indexing
   #
   # @return [Integer] H3 index.
   def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Int32) : UInt64
-    lat, lon = coords
+    lat, lng = coords
 
-    if lat > 90 || lat < -90 || lon > 180 || lon < -180
+    if lat > 90 || lat < -90 || lng > 180 || lng < -180
       raise "Invalid coordinates"
     end
 
-    geo_coords = LibH3::GeoCoord.new(
+    lat_lng = LibH3::LatLng.new(
       lat: degs_to_rads(lat),
-      lon: degs_to_rads(lon)
+      lng: degs_to_rads(lng)
     )
 
-    LibH3.geo_to_h3(pointerof(geo_coords), Resolution.new(resolution))
+    h3_index = 0_u64
+    LibH3.lat_lng_to_cell(pointerof(lat_lng), Resolution.new(resolution), pointerof(h3_index))
+
+    h3_index
   end
 
   # Derive coordinates for a given H3 index.
@@ -45,9 +48,10 @@ module Indexing
   #
   # @return [Array<Integer>] A coordinate pair.
   def to_geo_coordinates(h3_index : UInt64) : Tuple(Float64, Float64)
-    LibH3.h3_to_geo(h3_index, out coords)
+    coords = LibH3::LatLng.new(lat: 0.0, lng: 0.0)
+    LibH3.cell_to_lat_lng(h3_index, pointerof(coords))
 
-    {rads_to_degs(coords.lat), rads_to_degs(coords.lon)}
+    {rads_to_degs(coords.lat), rads_to_degs(coords.lng)}
   end
 
   # Derive the geographical boundary as coordinates for a given H3 index.
@@ -69,10 +73,11 @@ module Indexing
   #
   # @return [Array<Array<Integer>>] An array of six coordinate pairs.
   def to_boundary(h3_index : UInt64) : Array(Tuple(Float64, Float64))
-    LibH3.h3_to_geo_boundary(h3_index, out geo_boundary)
+    geo_boundary = LibH3::CellBoundary.new(num_verts: 0, verts: StaticArray(LibH3::LatLng, 10).new(LibH3::LatLng.new(lat: 0.0, lng: 0.0)))
+    LibH3.cell_to_boundary(h3_index, pointerof(geo_boundary))
 
     geo_boundary.verts.first(geo_boundary.num_verts).map do |vertex|
-      {rads_to_degs(vertex.lat), rads_to_degs(vertex.lon)}
+      {rads_to_degs(vertex.lat), rads_to_degs(vertex.lng)}
     end
   end
 end

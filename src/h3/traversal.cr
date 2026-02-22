@@ -16,7 +16,9 @@ module Traversal
   #
   # @return [Integer] Maximum k-ring size.
   def max_kring_size(k : Int32) : Int32
-    LibH3.max_kring_size(k)
+    size = 0_i64
+    LibH3.max_grid_disk_size(k, pointerof(size))
+    size.to_i
   end
 
   # @!method distance(origin, h3_index)
@@ -32,7 +34,9 @@ module Traversal
   #
   # @return [Integer] Distance between indexes.
   def distance(origin : UInt64, h3_index : UInt64) : Int32
-    LibH3.distance(origin, h3_index)
+    dist = 0_i64
+    LibH3.distance(origin, h3_index, pointerof(dist))
+    dist.to_i
   end
 
   # @!method line_size(origin, destination)
@@ -53,7 +57,9 @@ module Traversal
   #
   # @return [Integer] Number of hexagons found between indexes.
   def line_size(origin : UInt64, destination : UInt64) : Int32
-    LibH3.line_size(origin, destination)
+    size = 0_i64
+    LibH3.line_size(origin, destination, pointerof(size))
+    size.to_i
   end
 
   # Derives H3 indexes within k distance of the origin H3 index.
@@ -87,8 +93,8 @@ module Traversal
   def hex_range(origin, k) : Array(UInt64)
     max_hexagons = max_kring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
-    pentagonal_distortion = LibH3.hex_range(origin, k, output)
-    raise(Exception.new("Specified hexagon range contains a pentagon")) if pentagonal_distortion
+    err = LibH3.hex_range(origin, k, output)
+    raise(Exception.new("Specified hexagon range contains a pentagon")) if err != 0
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -143,8 +149,8 @@ module Traversal
   def hex_ring(origin, k) : Array(UInt64)
     max_hexagons = max_hex_ring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
-    pentagonal_distortion = LibH3.hex_ring(origin, k, output)
-    raise Exception.new("The hex ring contains a pentagon") if pentagonal_distortion
+    err = LibH3.hex_ring(origin, k, output)
+    raise Exception.new("The hex ring contains a pentagon") if err != 0
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -222,7 +228,8 @@ module Traversal
     max_out_size = h3_set.size * max_kring_size(k)
     output = Pointer(UInt64).malloc(max_out_size)
 
-    if LibH3.hex_ranges(h3_set, h3_set.size, k, output)
+    err = LibH3.hex_ranges(h3_set, h3_set.size, k, output)
+    if err != 0
       raise Exception.new("One of the specified hexagon ranges contains a pentagon")
     end
 
@@ -257,8 +264,8 @@ module Traversal
     max_out_size = max_kring_size(k)
     output = Pointer(UInt64).malloc(max_out_size)
     distances = Pointer(Int32).malloc(max_out_size)
-    pentagonal_distortion = LibH3.hex_range_distances(origin, k, output, distances)
-    raise(Exception.new("Specified hexagon range contains a pentagon")) if pentagonal_distortion
+    err = LibH3.hex_range_distances(origin, k, output, distances)
+    raise(Exception.new("Specified hexagon range contains a pentagon")) if err != 0
 
     hexagons = read_array_of_uint64(output, max_out_size)
     distances = read_array_of_int32(distances, max_out_size)
@@ -331,8 +338,8 @@ module Traversal
   def line(origin, destination)
     max_hexagons = line_size(origin, destination)
     hexagons = Pointer(UInt64).malloc(max_hexagons)
-    res = LibH3.h3_line(origin, destination, hexagons)
-    raise Exception.new("Could not compute line") if res.sign == -1
+    err = LibH3.h3_line(origin, destination, hexagons)
+    raise Exception.new("Could not compute line") if err != 0
 
     read_array_of_uint64(hexagons, max_hexagons)
   end

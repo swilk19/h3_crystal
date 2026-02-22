@@ -30,7 +30,9 @@ module Miscellaneous
   #
   # @return [Float] Length of edge in kilometres
   def edge_length_km(resolution : Int32) : Float64
-    LibH3.edge_length_km(Resolution.new(resolution))
+    length = 0.0
+    LibH3.edge_length_km(Resolution.new(resolution), pointerof(length))
+    length
   end
 
   # @!method edge_length_m(resolution)
@@ -45,7 +47,9 @@ module Miscellaneous
   #
   # @return [Float] Length of edge in metres
   def edge_length_m(resolution : Int32) : Float64
-    LibH3.edge_length_m(Resolution.new(resolution))
+    length = 0.0
+    LibH3.edge_length_m(Resolution.new(resolution), pointerof(length))
+    length
   end
 
   # @!method hex_area_km2(resolution)
@@ -60,7 +64,9 @@ module Miscellaneous
   #
   # @return [Float] Average hexagon area in square kilometres.
   def hex_area_km2(resolution : Int32) : Float64
-    LibH3.hex_area_km2(Resolution.new(resolution))
+    area = 0.0
+    LibH3.hex_area_km2(Resolution.new(resolution), pointerof(area))
+    area
   end
 
   # @!method hex_area_m2(resolution)
@@ -75,7 +81,9 @@ module Miscellaneous
   #
   # @return [Float] Average hexagon area in square metres.
   def hex_area_m2(resolution : Int32) : Float64
-    LibH3.hex_area_m2(Resolution.new(resolution))
+    area = 0.0
+    LibH3.hex_area_m2(Resolution.new(resolution), pointerof(area))
+    area
   end
 
   # @!method hexagon_count(resolution)
@@ -89,8 +97,10 @@ module Miscellaneous
   #   14117882
   #
   # @return [Integer] Number of unique hexagons
-  def hexagon_count(resolution : Int32) : UInt64
-    LibH3.hexagon_count(Resolution.new(resolution))
+  def hexagon_count(resolution : Int32) : Int64
+    count = 0_i64
+    LibH3.hexagon_count(Resolution.new(resolution), pointerof(count))
+    count
   end
 
   # @!method rads_to_degs(rads)
@@ -143,8 +153,10 @@ module Miscellaneous
   #
   # @return [Array<Integer>] All resolution 0 hexagons (base cells).
   def base_cells : Array(UInt64)
-    LibH3.res_0_indexes(out base_cells)
-    Array(UInt64).new(base_cells.size) { |i| base_cells[i] }
+    count = base_cell_count
+    output = Pointer(UInt64).malloc(count)
+    LibH3.res_0_cells(output)
+    Array(UInt64).new(count) { |i| output[i] }
   end
 
   # Returns all pentagon indexes at the given resolution.
@@ -155,7 +167,9 @@ module Miscellaneous
   #
   # @return [Array<Integer>] All pentagon indexes at the given resolution.
   def pentagons(resolution) : Array(UInt64)
-    LibH3.get_pentagon_indexes(resolution, out pentagons)
-    Array(UInt64).new(pentagons.size) { |i| pentagons[i] }
+    count = 12
+    output = Pointer(UInt64).malloc(count)
+    LibH3.get_pentagons(resolution, output)
+    Array(UInt64).new(count) { |i| output[i] }
   end
 end
