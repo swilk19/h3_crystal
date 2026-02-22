@@ -10,3 +10,10 @@ scripts:
 crystal: ">= 1.10.0"
 
 license: MIT
+
+# Optional dependency: required only when using H3::GeoJSON integration.
+# Consumers must add this to their own shard.yml and require "h3_crystal/h3/geojson".
+dependencies:
+  geojson:
+    github: geocrystal/geojson
+    version: "~> 0.6"
