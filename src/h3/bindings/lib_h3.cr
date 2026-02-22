@@ -52,6 +52,11 @@ module H3
           next : Pointer(LinkedGeoPolygon)
         end
 
+        struct CoordIJ
+          i : Int32
+          j : Int32
+        end
+
         # Misc
         fun degs_to_rads = degsToRads(degrees : Float64) : Float64
         fun rads_to_degs = radsToDegs(rads : Float64) : Float64
@@ -109,6 +114,16 @@ module H3
         fun polygon_to_cells = polygonToCells(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : H3Index*) : H3Error
         fun cells_to_linked_multi_polygon = cellsToLinkedMultiPolygon(h3_set : H3Index*, num_hexes : Int32, out : Pointer(LinkedGeoPolygon)) : H3Error
         fun destroy_linked_multi_polygon = destroyLinkedMultiPolygon(polygon : Pointer(LinkedGeoPolygon)) : Void
+
+        # Vertex
+        fun cell_to_vertex = cellToVertex(origin : H3Index, vertex_num : Int32, out : H3Index*) : H3Error
+        fun cell_to_vertexes = cellToVertexes(origin : H3Index, out : H3Index*) : H3Error
+        fun vertex_to_lat_lng = vertexToLatLng(vertex : H3Index, out : Pointer(LatLng)) : H3Error
+        fun is_valid_vertex = isValidVertex(vertex : H3Index) : Int32
+
+        # Local IJ Coordinates
+        fun cell_to_local_ij = cellToLocalIj(origin : H3Index, h3 : H3Index, mode : UInt32, out : CoordIJ*) : H3Error
+        fun local_ij_to_cell = localIjToCell(origin : H3Index, ij : CoordIJ*, mode : UInt32, out : H3Index*) : H3Error
 
         # Directed Edges
         fun are_neighbor_cells = areNeighborCells(origin : H3Index, destination : H3Index, out : Int32*) : H3Error
