@@ -156,4 +156,40 @@ describe H3 do
       end
     end
   end
+
+  describe ".polygon_to_cells_experimental" do
+    it "matches polygon_to_cells in Center mode" do
+      H3.polygon_to_cells_experimental(sf_polygon, 9).sort.should eq H3.polygon_to_cells(sf_polygon, 9).sort
+    end
+
+    it "orders Full <= Center <= Overlapping <= OverlappingBbox" do
+      sizes = [
+        H3::ContainmentMode::Full, H3::ContainmentMode::Center,
+        H3::ContainmentMode::Overlapping, H3::ContainmentMode::OverlappingBbox,
+      ].map { |mode| H3.polygon_to_cells_experimental(sf_polygon, 8, mode: mode).size }
+
+      sizes.each_cons(2) { |pair| pair[0].should be <= pair[1] }
+      sizes.first.should be < sizes.last
+    end
+
+    it "returns valid cells at the requested resolution" do
+      H3.polygon_to_cells_experimental(sf_polygon, 8, mode: H3::ContainmentMode::Full).each do |cell|
+        H3.valid?(cell).should be_true
+        H3.resolution(cell).should eq 8
+      end
+    end
+
+    it "raises for an invalid resolution" do
+      expect_raises(Exception) { H3.polygon_to_cells_experimental(sf_polygon, 16) }
+    end
+  end
+
+  describe ".max_polygon_to_cells_size_experimental" do
+    it "covers the actual cell count for each mode" do
+      H3::ContainmentMode.each do |mode|
+        max = H3.max_polygon_to_cells_size_experimental(sf_polygon, 8, mode: mode)
+        max.should be >= H3.polygon_to_cells_experimental(sf_polygon, 8, mode: mode).size
+      end
+    end
+  end
 end

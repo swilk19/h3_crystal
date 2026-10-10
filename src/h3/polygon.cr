@@ -1,6 +1,20 @@
 require "./bindings/base"
 require "./miscellaneous"
 
+module H3
+  # Containment modes for {Polygon#polygon_to_cells_experimental}.
+  enum ContainmentMode : UInt32
+    # Cell center is contained in the shape.
+    Center = 0
+    # Cell is fully contained in the shape.
+    Full = 1
+    # Cell overlaps the shape at any point.
+    Overlapping = 2
+    # Cell bounding box overlaps the shape.
+    OverlappingBbox = 3
+  end
+end
+
 module Polygon
   include H3::Bindings::Base
   include Miscellaneous
@@ -48,6 +62,47 @@ module Polygon
 
     output = Pointer(UInt64).malloc(max_size)
     err = LibH3.polygon_to_cells(pointerof(geo_polygon), Resolution.new(resolution), flags, output)
+    raise Exception.new("Couldn't fill polygon with cells") if err != 0
+
+    read_array_of_uint64(output, max_size)
+  end
+
+  # Derive the maximum number of H3 cells that could fill a polygon under the
+  # given containment mode (experimental).
+  #
+  # @param [Array<Tuple(Float64, Float64)>] polygon Outer boundary coordinates (lat, lng) in degrees.
+  # @param [Integer] resolution The desired H3 resolution (0-15).
+  # @param [Array<Array<Tuple(Float64, Float64)>>] holes Interior boundary (hole) coordinates in degrees.
+  # @param [H3::ContainmentMode] mode Containment mode (default Center).
+  #
+  # @return [Integer] Maximum number of H3 cells.
+  def max_polygon_to_cells_size_experimental(polygon : Array(Tuple(Float64, Float64)), resolution : Int32, holes : Array(Array(Tuple(Float64, Float64))) = [] of Array(Tuple(Float64, Float64)), mode : H3::ContainmentMode = H3::ContainmentMode::Center) : Int64
+    geo_polygon = build_geo_polygon(polygon, holes)
+    count = 0_i64
+    err = LibH3.max_polygon_to_cells_size_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, pointerof(count))
+    raise Exception.new("Couldn't estimate max polygon to cells size") if err != 0
+
+    count
+  end
+
+  # Fill a polygon with H3 cells using a containment mode (experimental).
+  #
+  # @param [Array<Tuple(Float64, Float64)>] polygon Outer boundary coordinates (lat, lng) in degrees.
+  # @param [Integer] resolution The desired H3 resolution (0-15).
+  # @param [Array<Array<Tuple(Float64, Float64)>>] holes Interior boundary (hole) coordinates in degrees.
+  # @param [H3::ContainmentMode] mode Containment mode (default Center).
+  #
+  # @example Fill a polygon with cells fully contained in it.
+  #   H3.polygon_to_cells_experimental(polygon, 9, mode: H3::ContainmentMode::Full)
+  #
+  # @return [Array<Integer>] Array of H3 indexes filling the polygon.
+  def polygon_to_cells_experimental(polygon : Array(Tuple(Float64, Float64)), resolution : Int32, holes : Array(Array(Tuple(Float64, Float64))) = [] of Array(Tuple(Float64, Float64)), mode : H3::ContainmentMode = H3::ContainmentMode::Center) : Array(UInt64)
+    geo_polygon = build_geo_polygon(polygon, holes)
+    max_size = max_polygon_to_cells_size_experimental(polygon, resolution, holes, mode)
+    return [] of UInt64 if max_size <= 0
+
+    output = Pointer(UInt64).malloc(max_size)
+    err = LibH3.polygon_to_cells_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, max_size, output)
     raise Exception.new("Couldn't fill polygon with cells") if err != 0
 
     read_array_of_uint64(output, max_size)

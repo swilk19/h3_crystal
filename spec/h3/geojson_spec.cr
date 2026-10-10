@@ -104,6 +104,14 @@ describe H3 do
     end
   end
 
+  describe ".polygon_to_cells_experimental (GeoJSON::Polygon)" do
+    it "returns fewer cells in Full mode than Overlapping mode" do
+      full = H3.polygon_to_cells_experimental(SF_POLYGON_GEOJSON, 8, H3::ContainmentMode::Full)
+      overlapping = H3.polygon_to_cells_experimental(SF_POLYGON_GEOJSON, 8, H3::ContainmentMode::Overlapping)
+      full.size.should be < overlapping.size
+    end
+  end
+
   describe ".polygon_to_cells (GeoJSON::MultiPolygon)" do
     context "with a GeoJSON MultiPolygon containing two polygons" do
       polygon1 = GeoJSON::Polygon.new([

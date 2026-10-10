@@ -78,6 +78,7 @@ module H3
         fun describe_h3_error = describeH3Error(err : H3Error) : LibC::Char*
         fun is_valid_index = isValidIndex(h : H3Index) : Int32
         fun get_index_digit = getIndexDigit(h : H3Index, res : Int32, out : Int32*) : H3Error
+        fun construct_cell = constructCell(res : Int32, base_cell_number : Int32, digits : Int32*, out : H3Index*) : H3Error
 
         # Indexing
         fun lat_lng_to_cell = latLngToCell(g : Pointer(LatLng), res : Int32, out : H3Index*) : H3Error
@@ -101,6 +102,8 @@ module H3
         fun hex_ring = gridRingUnsafe(h3_index : H3Index, k_distance : Int32, output : H3Index*) : H3Error
         fun k_ring = gridDisk(h3_index : H3Index, k_distance : Int32, output : H3Index*) : H3Error
         fun k_ring_distances = gridDiskDistances(h3_index : H3Index, k_distance : Int32, h3_indexes_out : H3Index*, distances : Int32*) : H3Error
+        fun grid_ring = gridRing(h3_index : H3Index, k_distance : Int32, output : H3Index*) : H3Error
+        fun k_ring_distances_safe = gridDiskDistancesSafe(h3_index : H3Index, k_distance : Int32, h3_indexes_out : H3Index*, distances : Int32*) : H3Error
         fun hex_range = gridDiskUnsafe(h3_index : H3Index, k_distance : Int32, h3_indexes_out : H3Index*) : H3Error
         fun hex_range_distances = gridDiskDistancesUnsafe(h3_index : H3Index, k_distance : Int32, h3_indexes_out : H3Index*, output_buffer : Int32*) : H3Error
         fun hex_ranges = gridDisksUnsafe(h3_indexes_in : H3Index*, size : Int32, k_distance : Int32, h3_indexes_out : H3Index*) : H3Error
@@ -122,6 +125,8 @@ module H3
         # Polygon
         fun max_polygon_to_cells_size = maxPolygonToCellsSize(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : Int64*) : H3Error
         fun polygon_to_cells = polygonToCells(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : H3Index*) : H3Error
+        fun max_polygon_to_cells_size_experimental = maxPolygonToCellsSizeExperimental(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, out : Int64*) : H3Error
+        fun polygon_to_cells_experimental = polygonToCellsExperimental(geo_polygon : Pointer(GeoPolygon), res : Int32, flags : UInt32, size : Int64, out : H3Index*) : H3Error
         fun cells_to_linked_multi_polygon = cellsToLinkedMultiPolygon(h3_set : H3Index*, num_hexes : Int32, out : Pointer(LinkedGeoPolygon)) : H3Error
         fun destroy_linked_multi_polygon = destroyLinkedMultiPolygon(polygon : Pointer(LinkedGeoPolygon)) : Void
 

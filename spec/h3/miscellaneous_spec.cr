@@ -235,4 +235,33 @@ describe H3 do
       end
     end
   end
+
+  describe ".construct_cell" do
+    it "round-trips a cell's components" do
+      cell = H3_VALID_INDEX.to_u64
+      res = H3.resolution(cell)
+      digits = (1..res).map { |r| H3.get_index_digit(cell, r) }
+      H3.construct_cell(res, H3.base_cell(cell), digits).should eq cell
+    end
+
+    it "constructs a resolution 0 cell" do
+      cell = H3.construct_cell(0, 20)
+      H3.valid?(cell).should be_true
+      H3.resolution(cell).should eq 0
+      H3.base_cell(cell).should eq 20
+    end
+
+    it "raises on an invalid base cell" do
+      expect_raises(Exception) { H3.construct_cell(0, 122) }
+    end
+
+    it "raises on invalid pentagon digits" do
+      pentagon_base = 4
+      expect_raises(Exception) { H3.construct_cell(1, pentagon_base, [1]) }
+    end
+
+    it "raises when digit count does not match resolution" do
+      expect_raises(Exception) { H3.construct_cell(2, 20, [0]) }
+    end
+  end
 end

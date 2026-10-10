@@ -75,6 +75,18 @@ module H3
       cells.to_a
     end
 
+    # Fill a GeoJSON::Polygon with H3 cells using a containment mode (experimental).
+    #
+    # @param [::GeoJSON::Polygon] polygon A GeoJSON Polygon geometry.
+    # @param [Integer] resolution The desired H3 resolution (0-15).
+    # @param [H3::ContainmentMode] mode Containment mode (default Center).
+    #
+    # @return [Array<UInt64>] Array of H3 indexes filling the polygon.
+    def polygon_to_cells_experimental(polygon : ::GeoJSON::Polygon, resolution : Int32, mode : H3::ContainmentMode = H3::ContainmentMode::Center) : Array(UInt64)
+      outer, holes = geojson_polygon_to_h3_coords(polygon)
+      H3.polygon_to_cells_experimental(outer, resolution, holes: holes, mode: mode)
+    end
+
     # Convert a set of H3 cells to a GeoJSON::MultiPolygon geometry.
     #
     # @param [Array<UInt64>] h3_set An array of valid H3 indexes.
