@@ -12,8 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 1.10.1 is the shard.yml floor and the .mise.toml dev version.
-        crystal: ["1.10.1", "1.14.0"]
+        # 1.10.1 is the shard.yml floor; 1.21.1 is the .mise.toml dev version (latest).
+        crystal: ["1.10.1", "1.21.1"]
 
     container:
       image: crystallang/crystal:${{ matrix.crystal }}
