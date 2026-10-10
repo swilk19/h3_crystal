@@ -19,7 +19,8 @@ module Hierarchy
   # @return [Integer] H3 index of parent hexagon.
   def parent(h3_index : UInt64, parent_resolution : Int32) : UInt64
     result = 0_u64
-    LibH3.parent(h3_index, Resolution.new(parent_resolution), pointerof(result))
+    err = LibH3.parent(h3_index, parent_resolution, pointerof(result))
+    H3::Error.check!(err, "Couldn't get parent cell")
     result
   end
 
@@ -37,7 +38,8 @@ module Hierarchy
   # @return [Integer] Maximum number of child hexagons possible at given resolution.
   def max_children(h3_index : UInt64, child_resolution : Int32) : Int64
     count = 0_i64
-    LibH3.max_children(h3_index, child_resolution, pointerof(count))
+    err = LibH3.max_children(h3_index, child_resolution, pointerof(count))
+    H3::Error.check!(err, "Couldn't get max children size")
     count
   end
 
@@ -56,7 +58,8 @@ module Hierarchy
   # @return [Integer] H3 index of center child hexagon.
   def center_child(h3_index : UInt64, resolution : Int32) : UInt64
     result = 0_u64
-    LibH3.center_child(h3_index, Resolution.new(resolution), pointerof(result))
+    err = LibH3.center_child(h3_index, resolution, pointerof(result))
+    H3::Error.check!(err, "Couldn't get center child")
     result
   end
 
@@ -74,11 +77,10 @@ module Hierarchy
   #
   # @return [Array<Integer>] H3 indexes of child hexagons.
   def children(h3_index : UInt64, child_resolution : Int32) : Array(UInt64)
-    Resolution.new(child_resolution)
     max = max_children(h3_index, child_resolution)
-    return [] of UInt64 if max <= 0
     output = Pointer(UInt64).malloc(max)
-    LibH3.h3_to_children(h3_index, child_resolution, output)
+    err = LibH3.h3_to_children(h3_index, child_resolution, output)
+    H3::Error.check!(err, "Couldn't get children")
 
     read_array_of_uint64(output, max)
   end
@@ -103,8 +105,8 @@ module Hierarchy
   # @return [Integer] Maximum size of uncompacted set.
   def max_uncompact_size(compacted_set : Array(UInt64), resolution : Int32) : Int64
     size = 0_i64
-    err = LibH3.max_uncompact_size(compacted_set, compacted_set.size.to_i64, Resolution.new(resolution), pointerof(size))
-    H3::Error.check!(err, "Couldn't estimate size. Invalid resolution?")
+    err = LibH3.max_uncompact_size(compacted_set, compacted_set.size.to_i64, resolution, pointerof(size))
+    H3::Error.check!(err, "Couldn't estimate uncompacted size")
 
     size
   end
@@ -169,7 +171,7 @@ module Hierarchy
   def uncompact(compacted_set : Array(UInt64), resolution : Int32) : Array(UInt64)
     max_size = max_uncompact_size(compacted_set, resolution)
     output = Pointer(UInt64).malloc(max_size)
-    err = LibH3.uncompact(compacted_set, compacted_set.size.to_i64, output, max_size, Resolution.new(resolution))
+    err = LibH3.uncompact(compacted_set, compacted_set.size.to_i64, output, max_size, resolution)
     H3::Error.check!(err, "Couldn't uncompact given indexes")
 
     read_array_of_uint64(output, max_size)
@@ -190,7 +192,7 @@ module Hierarchy
   # @return [Integer] Position of child within parent's children.
   def cell_to_child_pos(child : UInt64, parent_resolution : Int32) : Int64
     result = 0_i64
-    err = LibH3.cell_to_child_pos(child, Resolution.new(parent_resolution), pointerof(result))
+    err = LibH3.cell_to_child_pos(child, parent_resolution, pointerof(result))
     H3::Error.check!(err, "Couldn't get child position")
 
     result
@@ -212,7 +214,7 @@ module Hierarchy
   # @return [Integer] H3 index of child cell at the given position.
   def child_pos_to_cell(child_pos : Int64, parent : UInt64, child_resolution : Int32) : UInt64
     result = 0_u64
-    err = LibH3.child_pos_to_cell(child_pos, parent, Resolution.new(child_resolution), pointerof(result))
+    err = LibH3.child_pos_to_cell(child_pos, parent, child_resolution, pointerof(result))
     H3::Error.check!(err, "Couldn't get child cell from position")
 
     result

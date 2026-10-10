@@ -1,10 +1,6 @@
-require "./types"
-
 module H3
   module Bindings
     module Private
-      include Types
-
       @[Link(ldflags: "#{__DIR__}/../../../ext/h3/build/lib/libh3.a -lm")]
       lib LibH3
         alias H3Index = UInt64

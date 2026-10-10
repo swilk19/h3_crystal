@@ -12,14 +12,9 @@ describe H3 do
   describe ".children" do
     h3_index = "8928308280fffff".to_u64(16)
 
-    context "when resolution is 3" do
-      child_resolution = 3
-      count = 0
-
-      children = H3.children(h3_index, child_resolution)
-
-      it "has 0 children" do
-        children.size.should eq count
+    context "when resolution is coarser than the cell" do
+      it "raises ResDomainError" do
+        expect_raises(H3::ResDomainError) { H3.children(h3_index, 3) }
       end
     end
 
@@ -85,13 +80,10 @@ describe H3 do
   describe ".max_children" do
     h3_index = "8928308280fffff".to_u64(16)
 
-    context "when resolution is 3" do
-      child_resolution = 3
-      count = 0
-
-      max_children = H3.max_children(h3_index, child_resolution)
-
-      it { max_children.should eq(count) }
+    context "when resolution is coarser than the cell" do
+      it "raises ResDomainError" do
+        expect_raises(H3::ResDomainError) { H3.max_children(h3_index, 3) }
+      end
     end
 
     context "when resolution is 9" do
@@ -254,6 +246,60 @@ describe H3 do
           H3.child_pos_to_cell(0_i64, parent, 16)
         end
       end
+    end
+  end
+
+  describe ".parent with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.parent(H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".center_child with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.center_child(H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".children with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.children(H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".max_children with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.max_children(H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".cell_to_child_pos with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.cell_to_child_pos(H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".child_pos_to_cell with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.child_pos_to_cell(0_i64, H3_VALID_INDEX, res) }
+      end
+    end
+  end
+
+  describe ".parent with an incompatible cell" do
+    it "raises ResMismatchError" do
+      expect_raises(H3::ResMismatchError) { H3.parent(0_u64, 3) }
     end
   end
 end

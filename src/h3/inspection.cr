@@ -48,7 +48,8 @@ module Inspection
   # @return [Integer] H3 index
   def from_string(h3_string : String) : UInt64
     h3_index = 0_u64
-    LibH3.from_string(h3_string, pointerof(h3_index))
+    err = LibH3.from_string(h3_string, pointerof(h3_index))
+    H3::Error.check!(err, "Couldn't parse H3 index string")
     h3_index
   end
 
@@ -109,7 +110,8 @@ module Inspection
   # @return [String] H3 index in hexadecimal form.
   def to_string(h3_index : UInt64) : String
     h3_str = Pointer(LibC::Char).malloc(H3_TO_STR_BUF_SIZE)
-    LibH3.h3_to_string(h3_index, h3_str, H3_TO_STR_BUF_SIZE)
+    err = LibH3.h3_to_string(h3_index, h3_str, H3_TO_STR_BUF_SIZE)
+    H3::Error.check!(err, "Couldn't convert H3 index to string")
     String.new(h3_str)
   end
 
@@ -126,7 +128,8 @@ module Inspection
   # @return [Integer] Maximum possible number of faces
   def max_face_count(h3_index : UInt64) : Int32
     count = 0_i32
-    LibH3.max_face_count(h3_index, pointerof(count))
+    err = LibH3.max_face_count(h3_index, pointerof(count))
+    H3::Error.check!(err, "Couldn't get max face count")
     count
   end
 
@@ -144,7 +147,8 @@ module Inspection
   def faces(h3_index : UInt64) : Array(Int32)
     max_faces = max_face_count(h3_index)
     c_output = Pointer(Int32).malloc(max_faces)
-    LibH3.h3_faces(h3_index, c_output)
+    err = LibH3.h3_faces(h3_index, c_output)
+    H3::Error.check!(err, "Couldn't get icosahedron faces")
     result = Array(Int32).new(max_faces)
     max_faces.times do |i|
       result << c_output[i] unless c_output[i] < 0

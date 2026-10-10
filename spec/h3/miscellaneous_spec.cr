@@ -264,4 +264,52 @@ describe H3 do
       expect_raises(H3::DomainError) { H3.construct_cell(2, 20, [0]) }
     end
   end
+
+  describe ".edge_length_km with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.edge_length_km(res) }
+      end
+    end
+  end
+
+  describe ".edge_length_m with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.edge_length_m(res) }
+      end
+    end
+  end
+
+  describe ".hex_area_km2 with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.hex_area_km2(res) }
+      end
+    end
+  end
+
+  describe ".hex_area_m2 with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.hex_area_m2(res) }
+      end
+    end
+  end
+
+  describe ".hexagon_count with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.hexagon_count(res) }
+      end
+    end
+  end
+
+  describe ".pentagons with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.pentagons(res) }
+      end
+    end
+  end
 end

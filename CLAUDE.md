@@ -33,7 +33,6 @@ The library exposes a single `H3` module that extends four functional modules, e
 
 Supporting layers:
 - `src/h3/bindings/lib_h3.cr` — raw C FFI declarations with static linking (`@[Link(ldflags: "...ext/h3/build/lib/libh3.a -lm")]`)
-- `src/h3/bindings/types.cr` — `Resolution` class (validates 0–15 range, implements `to_unsafe` for C interop)
 - `src/h3/bindings/base.cr` — base module setup; also includes `Miscellaneous` which provides utility functions shared across all modules
 
 All public methods are called as `H3.method_name`. Crystal-side method names are unchanged from v3 for API compatibility.
@@ -48,7 +47,7 @@ Tests are in `spec/h3/` organized to mirror the module structure. They use Cryst
 
 ## Key Patterns
 
-- H3 v4 functions return `H3Error` (UInt32) with outputs via pointer params; wrappers check `!= 0` for errors
+- H3 v4 functions return `H3Error` (UInt32) with outputs via pointer params; every wrapper routes it through `H3::Error.check!`. C is the source of truth for validation (including resolution range)
 - Geo coordinates are converted between degrees (Crystal API) and radians (C API) at the binding boundary
 - C arrays are allocated with `Pointer.malloc` and read back with `read_array_of_uint64`/`read_array_of_int32` helpers
 - Bool predicates in v4 return `Int32` (0/1); wrappers convert with `!= 0`

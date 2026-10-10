@@ -496,4 +496,28 @@ describe H3 do
 
     it { line.should eq(result) }
   end
+
+  describe "negative k" do
+    it "raises DomainError from max_kring_size" do
+      expect_raises(H3::DomainError) { H3.max_kring_size(-1) }
+    end
+
+    it "raises DomainError from k_ring" do
+      expect_raises(H3::DomainError) { H3.k_ring(H3_VALID_INDEX, -1) }
+    end
+
+    it "raises DomainError from k_ring_distances" do
+      expect_raises(H3::DomainError) { H3.k_ring_distances(H3_VALID_INDEX, -1) }
+    end
+  end
+
+  describe "cells at mismatched resolutions" do
+    it "raises ResMismatchError from distance" do
+      expect_raises(H3::ResMismatchError) { H3.distance(H3_VALID_INDEX, 0_u64) }
+    end
+
+    it "raises ResMismatchError from line_size" do
+      expect_raises(H3::ResMismatchError) { H3.line_size(H3_VALID_INDEX, 0_u64) }
+    end
+  end
 end
