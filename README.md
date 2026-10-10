@@ -193,6 +193,45 @@ This shard covers **100% of the H3 v4 API** (all 78 exported C functions).
 | `get_index_digit` | `getIndexDigit` | Direction digit at resolution |
 | `construct_cell` | `constructCell` | Build a cell from resolution, base cell, digits |
 
+## Error handling
+
+Failures reported by the H3 C library raise `H3::Error` (or a subclass). Every error exposes `code` (the raw `H3Error` value) and `error_code` (an `H3::ErrorCode`, or `nil` for an unknown code). Messages read `"<context>: <H3 description> (code N)"`.
+
+```crystal
+begin
+  H3.hex_ring(pentagon, 1)
+rescue ex : H3::PentagonError
+  ex.code       # => 9
+  ex.error_code # => H3::ErrorCode::Pentagon
+end
+```
+
+Each H3 error code 1-19 has its own subclass of `H3::Error`, named after the H3 constant (`E_PENTAGON` becomes `PentagonError`):
+
+| Code | Class |
+|---|---|
+| 1 | `H3::FailedError` |
+| 2 | `H3::DomainError` |
+| 3 | `H3::LatlngDomainError` |
+| 4 | `H3::ResDomainError` |
+| 5 | `H3::CellInvalidError` |
+| 6 | `H3::DirEdgeInvalidError` |
+| 7 | `H3::UndirEdgeInvalidError` |
+| 8 | `H3::VertexInvalidError` |
+| 9 | `H3::PentagonError` |
+| 10 | `H3::DuplicateInputError` |
+| 11 | `H3::NotNeighborsError` |
+| 12 | `H3::ResMismatchError` |
+| 13 | `H3::MemoryAllocError` |
+| 14 | `H3::MemoryBoundsError` |
+| 15 | `H3::OptionInvalidError` |
+| 16 | `H3::IndexInvalidError` |
+| 17 | `H3::BaseCellDomainError` |
+| 18 | `H3::DigitDomainError` |
+| 19 | `H3::DeletedDigitError` |
+
+Unknown codes raise the base `H3::Error` with the raw `code` kept. Crystal-side argument checks raise the subclass the C library would have returned (for example `H3::ResDomainError` for a resolution outside 0-15).
+
 ## GeoJSON Integration (Optional)
 
 For projects that work with GeoJSON data, an optional integration with the [geocrystal/geojson](https://github.com/geocrystal/geojson) shard is available.

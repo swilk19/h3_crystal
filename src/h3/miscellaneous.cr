@@ -208,7 +208,7 @@ module Miscellaneous
   def get_index_digit(h3_index : UInt64, resolution : Int32) : Int32
     digit = 0_i32
     err = LibH3.get_index_digit(h3_index, resolution, pointerof(digit))
-    raise Exception.new("Failed to get index digit") if err != 0
+    H3::Error.check!(err, "Failed to get index digit")
     digit
   end
 
@@ -224,15 +224,15 @@ module Miscellaneous
   #   H3.construct_cell(2, 14, [0, 0])
   #   586265647244115967
   #
-  # @raise [Exception] Raised if the components do not describe a valid cell.
+  # @raise [H3::Error] Raised if the components do not describe a valid cell.
   #
   # @return [Integer] The H3 index.
   def construct_cell(resolution : Int32, base_cell : Int32, digits : Array(Int32) = [] of Int32) : UInt64
-    raise Exception.new("Expected #{resolution} digits, got #{digits.size}") if digits.size != resolution
+    raise H3::DomainError.new("Expected #{resolution} digits, got #{digits.size}") if digits.size != resolution
 
     out = 0_u64
     err = LibH3.construct_cell(Resolution.new(resolution), base_cell, digits.to_unsafe, pointerof(out))
-    raise Exception.new("Failed to construct cell") if err != 0
+    H3::Error.check!(err, "Failed to construct cell")
     out
   end
 
@@ -264,7 +264,7 @@ module Miscellaneous
   def cell_area_rads2(h3_index : UInt64) : Float64
     area = 0.0
     err = LibH3.cell_area_rads2(h3_index, pointerof(area))
-    raise Exception.new("Couldn't get cell area in square radians") if err != 0
+    H3::Error.check!(err, "Couldn't get cell area in square radians")
     area
   end
 
@@ -282,7 +282,7 @@ module Miscellaneous
   def cell_area_km2(h3_index : UInt64) : Float64
     area = 0.0
     err = LibH3.cell_area_km2(h3_index, pointerof(area))
-    raise Exception.new("Couldn't get cell area in square kilometres") if err != 0
+    H3::Error.check!(err, "Couldn't get cell area in square kilometres")
     area
   end
 
@@ -300,7 +300,7 @@ module Miscellaneous
   def cell_area_m2(h3_index : UInt64) : Float64
     area = 0.0
     err = LibH3.cell_area_m2(h3_index, pointerof(area))
-    raise Exception.new("Couldn't get cell area in square metres") if err != 0
+    H3::Error.check!(err, "Couldn't get cell area in square metres")
     area
   end
 

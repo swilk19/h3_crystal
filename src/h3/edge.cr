@@ -20,7 +20,7 @@ module Edge
   def are_neighbor_cells(origin : UInt64, destination : UInt64) : Bool
     result = 0_i32
     err = LibH3.are_neighbor_cells(origin, destination, pointerof(result))
-    raise Exception.new("Couldn't determine if cells are neighbors") if err != 0
+    H3::Error.check!(err, "Couldn't determine if cells are neighbors")
     result != 0
   end
 
@@ -35,13 +35,13 @@ module Edge
   #   H3.cells_to_directed_edge(617700169983721471, 617700169982672895)
   #   1608700169983721471
   #
-  # @raise [Exception] If the cells are not neighbors.
+  # @raise [H3::NotNeighborsError] If the cells are not neighbors.
   #
   # @return [Integer] H3 index of the directed edge.
   def cells_to_directed_edge(origin : UInt64, destination : UInt64) : UInt64
     edge = 0_u64
     err = LibH3.cells_to_directed_edge(origin, destination, pointerof(edge))
-    raise Exception.new("Couldn't get directed edge for given cells") if err != 0
+    H3::Error.check!(err, "Couldn't get directed edge for given cells")
     edge
   end
 
@@ -74,7 +74,7 @@ module Edge
   def directed_edge_origin(edge : UInt64) : UInt64
     origin = 0_u64
     err = LibH3.get_directed_edge_origin(edge, pointerof(origin))
-    raise Exception.new("Couldn't get origin for directed edge") if err != 0
+    H3::Error.check!(err, "Couldn't get origin for directed edge")
     origin
   end
 
@@ -92,7 +92,7 @@ module Edge
   def directed_edge_destination(edge : UInt64) : UInt64
     destination = 0_u64
     err = LibH3.get_directed_edge_destination(edge, pointerof(destination))
-    raise Exception.new("Couldn't get destination for directed edge") if err != 0
+    H3::Error.check!(err, "Couldn't get destination for directed edge")
     destination
   end
 
@@ -110,7 +110,7 @@ module Edge
   def directed_edge_to_cells(edge : UInt64) : Tuple(UInt64, UInt64)
     cells = Pointer(UInt64).malloc(2)
     err = LibH3.directed_edge_to_cells(edge, cells)
-    raise Exception.new("Couldn't get cells for directed edge") if err != 0
+    H3::Error.check!(err, "Couldn't get cells for directed edge")
     {cells[0], cells[1]}
   end
 
@@ -128,7 +128,7 @@ module Edge
   def origin_to_directed_edges(origin : UInt64) : Array(UInt64)
     edges = Pointer(UInt64).malloc(6)
     err = LibH3.origin_to_directed_edges(origin, edges)
-    raise Exception.new("Couldn't get directed edges for origin") if err != 0
+    H3::Error.check!(err, "Couldn't get directed edges for origin")
     read_array_of_uint64(edges, 6)
   end
 
@@ -146,7 +146,7 @@ module Edge
   def directed_edge_to_boundary(edge : UInt64) : Array(Tuple(Float64, Float64))
     geo_boundary = LibH3::CellBoundary.new(num_verts: 0, verts: StaticArray(LibH3::LatLng, 10).new(LibH3::LatLng.new(lat: 0.0, lng: 0.0)))
     err = LibH3.directed_edge_to_boundary(edge, pointerof(geo_boundary))
-    raise Exception.new("Couldn't get boundary for directed edge") if err != 0
+    H3::Error.check!(err, "Couldn't get boundary for directed edge")
 
     geo_boundary.verts.first(geo_boundary.num_verts).map do |vertex|
       {rads_to_degs(vertex.lat), rads_to_degs(vertex.lng)}
@@ -167,7 +167,7 @@ module Edge
   def exact_edge_length_rads(edge : UInt64) : Float64
     length = 0.0
     err = LibH3.exact_edge_length_rads(edge, pointerof(length))
-    raise Exception.new("Couldn't get edge length in radians") if err != 0
+    H3::Error.check!(err, "Couldn't get edge length in radians")
     length
   end
 
@@ -185,7 +185,7 @@ module Edge
   def exact_edge_length_km(edge : UInt64) : Float64
     length = 0.0
     err = LibH3.exact_edge_length_km(edge, pointerof(length))
-    raise Exception.new("Couldn't get edge length in kilometres") if err != 0
+    H3::Error.check!(err, "Couldn't get edge length in kilometres")
     length
   end
 
@@ -203,7 +203,7 @@ module Edge
   def exact_edge_length_m(edge : UInt64) : Float64
     length = 0.0
     err = LibH3.exact_edge_length_m(edge, pointerof(length))
-    raise Exception.new("Couldn't get edge length in metres") if err != 0
+    H3::Error.check!(err, "Couldn't get edge length in metres")
     length
   end
 end

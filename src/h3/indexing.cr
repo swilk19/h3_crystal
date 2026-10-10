@@ -15,14 +15,14 @@ module Indexing
   #   H3.from_geo_coordinates([52.24630137198303, -1.7358398437499998], 9)
   #   617439284584775679
   #
-  # @raise [ArgumentError] If coordinates are invalid.
+  # @raise [H3::LatlngDomainError] If coordinates are invalid.
   #
   # @return [Integer] H3 index.
   def from_geo_coordinates(coords : Tuple(Float64, Float64), resolution : Int32) : UInt64
     lat, lng = coords
 
     if lat > 90 || lat < -90 || lng > 180 || lng < -180
-      raise "Invalid coordinates"
+      raise H3::LatlngDomainError.new("Invalid coordinates")
     end
 
     lat_lng = LibH3::LatLng.new(

@@ -65,7 +65,7 @@ describe H3 do
       child_resolution = -1
 
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           children = H3.children(h3_index, child_resolution)
         end
       end
@@ -75,7 +75,7 @@ describe H3 do
       child_resolution = 16
 
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           children = H3.children(h3_index, child_resolution)
         end
       end
@@ -158,7 +158,7 @@ describe H3 do
       resolution = 8
 
       it "raises error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResMismatchError) do
           uncompact = H3.uncompact(compacted, resolution)
         end
       end
@@ -178,7 +178,7 @@ describe H3 do
       resolution = 8
 
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResMismatchError) do
           max_uncompact_size = H3.max_uncompact_size(h3_indexes, resolution)
         end
       end
@@ -217,7 +217,7 @@ describe H3 do
 
     context "when the resolution is invalid" do
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           H3.cell_to_child_pos(h3_index, 16)
         end
       end
@@ -250,7 +250,7 @@ describe H3 do
 
     context "when the resolution is invalid" do
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           H3.child_pos_to_cell(0_i64, parent, 16)
         end
       end

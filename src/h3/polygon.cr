@@ -37,7 +37,7 @@ module Polygon
     geo_polygon = build_geo_polygon(polygon, holes)
     count = 0_i64
     err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), Resolution.new(resolution), flags, pointerof(count))
-    raise Exception.new("Couldn't estimate max polygon to cells size") if err != 0
+    H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
 
     count
   end
@@ -59,12 +59,12 @@ module Polygon
     geo_polygon = build_geo_polygon(polygon, holes)
     max_size = 0_i64
     err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), Resolution.new(resolution), flags, pointerof(max_size))
-    raise Exception.new("Couldn't estimate max polygon to cells size") if err != 0
+    H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
     return [] of UInt64 if max_size <= 0
 
     output = Pointer(UInt64).malloc(max_size)
     err = LibH3.polygon_to_cells(pointerof(geo_polygon), Resolution.new(resolution), flags, output)
-    raise Exception.new("Couldn't fill polygon with cells") if err != 0
+    H3::Error.check!(err, "Couldn't fill polygon with cells")
 
     read_array_of_uint64(output, max_size)
   end
@@ -82,7 +82,7 @@ module Polygon
     geo_polygon = build_geo_polygon(polygon, holes)
     count = 0_i64
     err = LibH3.max_polygon_to_cells_size_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, pointerof(count))
-    raise Exception.new("Couldn't estimate max polygon to cells size") if err != 0
+    H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
 
     count
   end
@@ -105,7 +105,7 @@ module Polygon
 
     output = Pointer(UInt64).malloc(max_size)
     err = LibH3.polygon_to_cells_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, max_size, output)
-    raise Exception.new("Couldn't fill polygon with cells") if err != 0
+    H3::Error.check!(err, "Couldn't fill polygon with cells")
 
     read_array_of_uint64(output, max_size)
   end
@@ -130,7 +130,7 @@ module Polygon
     )
 
     err = LibH3.cells_to_linked_multi_polygon(h3_set, h3_set.size.to_i32, pointerof(linked_polygon))
-    raise Exception.new("Couldn't convert cells to multi polygon") if err != 0
+    H3::Error.check!(err, "Couldn't convert cells to multi polygon")
 
     result = collect_linked_polygons(pointerof(linked_polygon))
     LibH3.destroy_linked_multi_polygon(pointerof(linked_polygon))

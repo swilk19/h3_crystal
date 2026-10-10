@@ -78,7 +78,7 @@ describe H3 do
 
     context "when resolution is invalid" do
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           H3.polygon_to_cells(SF_POLYGON_GEOJSON, 16)
         end
       end

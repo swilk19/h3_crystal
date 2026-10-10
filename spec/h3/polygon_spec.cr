@@ -31,7 +31,7 @@ describe H3 do
 
     context "when resolution is invalid" do
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           H3.max_polygon_to_cells_size(sf_polygon, 16)
         end
       end
@@ -91,7 +91,7 @@ describe H3 do
 
     context "when resolution is invalid" do
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::ResDomainError) do
           H3.polygon_to_cells(sf_polygon, 16)
         end
       end
@@ -180,7 +180,7 @@ describe H3 do
     end
 
     it "raises for an invalid resolution" do
-      expect_raises(Exception) { H3.polygon_to_cells_experimental(sf_polygon, 16) }
+      expect_raises(H3::ResDomainError) { H3.polygon_to_cells_experimental(sf_polygon, 16) }
     end
   end
 

@@ -230,7 +230,7 @@ describe H3 do
 
     it "raises an error for invalid resolution 0" do
       h3_index = UInt64.new(H3_VALID_INDEX)
-      expect_raises(Exception) do
+      expect_raises(H3::ResDomainError) do
         H3.get_index_digit(h3_index, 0)
       end
     end
@@ -252,16 +252,16 @@ describe H3 do
     end
 
     it "raises on an invalid base cell" do
-      expect_raises(Exception) { H3.construct_cell(0, 122) }
+      expect_raises(H3::BaseCellDomainError) { H3.construct_cell(0, 122) }
     end
 
     it "raises on invalid pentagon digits" do
       pentagon_base = 4
-      expect_raises(Exception) { H3.construct_cell(1, pentagon_base, [1]) }
+      expect_raises(H3::DeletedDigitError) { H3.construct_cell(1, pentagon_base, [1]) }
     end
 
     it "raises when digit count does not match resolution" do
-      expect_raises(Exception) { H3.construct_cell(2, 20, [0]) }
+      expect_raises(H3::DomainError) { H3.construct_cell(2, 20, [0]) }
     end
   end
 end

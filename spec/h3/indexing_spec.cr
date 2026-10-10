@@ -13,7 +13,7 @@ describe H3 do
       resolution = 8
 
       it "throws an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::LatlngDomainError) do
           H3.from_geo_coordinates(coords, resolution)
         end
       end
