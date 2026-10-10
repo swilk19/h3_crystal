@@ -155,6 +155,30 @@ module Traversal
     read_array_of_uint64(output, max_hexagons)
   end
 
+  # Derives the hollow hexagonal ring centered at origin with sides of length k.
+  #
+  # Unlike {hex_ring}, this is pentagon-safe: it works near and around
+  # pentagons. Cells deleted by pentagon distortion are omitted, so the ring
+  # can contain fewer than `6 * k` cells.
+  #
+  # @param [Integer] origin Origin H3 index.
+  # @param [Integer] k K distance.
+  #
+  # @example Derive the grid ring for the H3 index at k = 1
+  #   H3.grid_ring(617700169983721471, 1)
+  #
+  # @raise [Exception] Raised if the ring cannot be computed.
+  #
+  # @return [Array<Integer>] Array of H3 indexes within the ring.
+  def grid_ring(origin : UInt64, k : Int32) : Array(UInt64)
+    max_hexagons = max_grid_ring_size(k)
+    output = Pointer(UInt64).malloc(max_hexagons)
+    err = LibH3.grid_ring(origin, k, output)
+    raise Exception.new("Could not compute grid ring") if err != 0
+
+    read_array_of_uint64(output, max_hexagons)
+  end
+
   # Derive the maximum hex ring size for a given distance k.
   #
   # NOTE: This method is not part of the H3 API and is added to this binding for convenience.
@@ -336,6 +360,36 @@ module Traversal
       end
 
     output
+  end
+
+  # Derives the k-ring for the given origin at k distance, sub-grouped by
+  # distance, using the pentagon-safe `gridDiskDistancesSafe` algorithm.
+  #
+  # @param [Integer] origin Origin H3 index.
+  # @param [Integer] k K distance.
+  #
+  # @example Derive the safe k-ring distances at distance 1
+  #   H3.k_ring_distances_safe(617700169983721471, 1)
+  #
+  # @raise [Exception] Raised if the disk cannot be computed.
+  #
+  # @return [Hash] Hash of cells grouped by distance.
+  def k_ring_distances_safe(origin : UInt64, k : Int32) : Hash(Int32, Array(UInt64))
+    max_out_size = max_kring_size(k)
+    output = Pointer(UInt64).malloc(max_out_size)
+    distances = Pointer(Int32).malloc(max_out_size)
+    err = LibH3.k_ring_distances_safe(origin, k, output, distances)
+    raise Exception.new("Could not compute k-ring distances") if err != 0
+
+    hexagons = Array(UInt64).new(max_out_size) { |i| output[i] }
+    dists = read_array_of_int32(distances, max_out_size)
+
+    result = Hash(Int32, Array(UInt64)).new
+    dists.zip(hexagons) do |dist, hex|
+      next if hex.zero?
+      (result[dist] ||= [] of UInt64) << hex
+    end
+    result
   end
 
   # Derives the H3 indexes found in a line between an origin H3 index

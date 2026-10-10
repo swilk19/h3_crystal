@@ -71,7 +71,7 @@ All public methods are called as `H3.method_name`.
 
 ## API Coverage
 
-This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
+This shard covers **100% of the H3 v4 API** (all 78 exported C functions).
 
 ### Indexing
 
@@ -105,6 +105,8 @@ This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
 | `hex_range` | `gridDiskUnsafe` | Cells within k (no pentagons) |
 | `hex_range_distances` | `gridDiskDistancesUnsafe` | Grouped by distance (no pentagons) |
 | `hex_ring` | `gridRingUnsafe` | Hollow ring at distance k |
+| `grid_ring` | `gridRing` | Hollow ring at distance k (pentagon-safe) |
+| `k_ring_distances_safe` | `gridDiskDistancesSafe` | Cells grouped by distance (pentagon-safe) |
 | `hex_ranges` | `gridDisksUnsafe` | Multi-origin disk (no pentagons) |
 | `distance` | `gridDistance` | Grid distance between cells |
 | `line` | `gridPathCells` | Path of cells between two cells |
@@ -164,6 +166,8 @@ This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
 |--------|-------------|-------------|
 | `polygon_to_cells` | `polygonToCells` | Fill polygon with cells |
 | `max_polygon_to_cells_size` | `maxPolygonToCellsSize` | Max cells for polygon fill |
+| `polygon_to_cells_experimental` | `polygonToCellsExperimental` | Fill polygon with a `H3::ContainmentMode` (`Center`, `Full`, `Overlapping`, `OverlappingBbox`) |
+| `max_polygon_to_cells_size_experimental` | `maxPolygonToCellsSizeExperimental` | Max cells for experimental polygon fill |
 | `cells_to_multi_polygon` | `cellsToLinkedMultiPolygon` | Cells to polygon boundaries |
 
 ### Measurements & Utilities
@@ -187,6 +191,7 @@ This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
 | `rads_to_degs` | `radsToDegs` | Radians to degrees |
 | `describe_h3_error` | `describeH3Error` | Error code description |
 | `get_index_digit` | `getIndexDigit` | Direction digit at resolution |
+| `construct_cell` | `constructCell` | Build a cell from resolution, base cell, digits |
 
 ## GeoJSON Integration (Optional)
 

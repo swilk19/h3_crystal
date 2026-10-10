@@ -212,6 +212,30 @@ module Miscellaneous
     digit
   end
 
+  # Constructs a cell from its components.
+  #
+  # Only valid H3 cells can be constructed.
+  #
+  # @param [Integer] resolution Resolution (0-15).
+  # @param [Integer] base_cell Base cell number (0-121).
+  # @param [Array<Integer>] digits Child digits (0-6), one per resolution level.
+  #
+  # @example Construct a resolution 2 cell from its components.
+  #   H3.construct_cell(2, 14, [0, 0])
+  #   586265647244115967
+  #
+  # @raise [Exception] Raised if the components do not describe a valid cell.
+  #
+  # @return [Integer] The H3 index.
+  def construct_cell(resolution : Int32, base_cell : Int32, digits : Array(Int32) = [] of Int32) : UInt64
+    raise Exception.new("Expected #{resolution} digits, got #{digits.size}") if digits.size != resolution
+
+    out = 0_u64
+    err = LibH3.construct_cell(Resolution.new(resolution), base_cell, digits.to_unsafe, pointerof(out))
+    raise Exception.new("Failed to construct cell") if err != 0
+    out
+  end
+
   # Returns all pentagon indexes at the given resolution.
   #
   # @example Return all pentagons at resolution 4.

@@ -402,6 +402,48 @@ describe H3 do
     end
   end
 
+  describe ".grid_ring" do
+    origin = 617700169983721471_u64
+
+    it "matches hex_ring away from pentagons" do
+      H3.grid_ring(origin, 2).sort.should eq H3.hex_ring(origin, 2).sort
+    end
+
+    it "returns the origin for k = 0" do
+      H3.grid_ring(origin, 0).should eq [origin]
+    end
+
+    context "when the ring contains a pentagon" do
+      pentagon = "821c07fffffffff".to_u64(16)
+
+      it "succeeds where hex_ring raises" do
+        expect_raises(Exception) { H3.hex_ring(pentagon, 1) }
+
+        ring = H3.grid_ring(pentagon, 1)
+        ring.size.should eq 5
+        ring.each { |cell| H3.valid?(cell).should be_true }
+        H3.k_ring(pentagon, 1).should contain(ring.first)
+        ring.each { |cell| H3.distance(pentagon, cell).should eq 1 }
+      end
+    end
+  end
+
+  describe ".k_ring_distances_safe" do
+    origin = 617700169983721471_u64
+
+    it "matches k_ring_distances away from pentagons" do
+      safe = H3.k_ring_distances_safe(origin, 2).transform_values(&.sort)
+      safe.should eq H3.k_ring_distances(origin, 2).transform_values(&.sort)
+    end
+
+    it "works around a pentagon" do
+      pentagon = "821c07fffffffff".to_u64(16)
+      result = H3.k_ring_distances_safe(pentagon, 2)
+      result[0].should eq [pentagon]
+      result[1].size.should eq 5
+    end
+  end
+
   describe ".max_grid_ring_size" do
     it "returns 1 for k = 0" do
       H3.max_grid_ring_size(0).should eq(1)
