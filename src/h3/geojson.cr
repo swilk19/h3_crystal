@@ -34,7 +34,7 @@ module H3
     #
     # @param [::GeoJSON::Polygon] polygon A GeoJSON Polygon geometry.
     # @param [Integer] resolution The desired H3 resolution (0-15).
-    # @param [UInt32] flags Reserved by H3 for future use (default 0). Validated (must be 0) but does not change the result, which always uses center containment.
+    # @param [UInt32] flags Reserved by H3 for future use (default 0). Values above 3 raise; otherwise ignored, so results always use center containment.
     #   For other containment modes, use `polygon_to_cells_experimental` with `mode: H3::ContainmentMode`.
     #
     # @example Fill a GeoJSON polygon with H3 cells at resolution 9.
@@ -58,7 +58,7 @@ module H3
     #
     # @param [::GeoJSON::MultiPolygon] multi_polygon A GeoJSON MultiPolygon geometry.
     # @param [Integer] resolution The desired H3 resolution (0-15).
-    # @param [UInt32] flags Reserved by H3 for future use (default 0). Validated (must be 0) but does not change the result, which always uses center containment.
+    # @param [UInt32] flags Reserved by H3 for future use (default 0). Values above 3 raise; otherwise ignored, so results always use center containment.
     #   For other containment modes, use `polygon_to_cells_experimental` with `mode: H3::ContainmentMode`.
     #
     # @example Fill a GeoJSON MultiPolygon with H3 cells at resolution 7.

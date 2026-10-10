@@ -25,7 +25,7 @@ module Polygon
   # @param [Array<Tuple(Float64, Float64)>] polygon Outer boundary coordinates (lat, lng) in degrees.
   # @param [Array<Array<Tuple(Float64, Float64)>>] holes Interior boundary (hole) coordinates in degrees.
   # @param [Integer] resolution The desired H3 resolution (0-15).
-  # @param [Integer] flags Reserved by H3 for future use (default 0). Validated (must be 0) but does not change the result, which always uses center containment.
+  # @param [Integer] flags Reserved by H3 for future use (default 0). Values above 3 raise; otherwise ignored, so results always use center containment.
   #   For other containment modes, use `polygon_to_cells_experimental` with `mode: H3::ContainmentMode`.
   #
   # @example Get the max number of cells for a polygon.
@@ -47,7 +47,7 @@ module Polygon
   # @param [Array<Tuple(Float64, Float64)>] polygon Outer boundary coordinates (lat, lng) in degrees.
   # @param [Array<Array<Tuple(Float64, Float64)>>] holes Interior boundary (hole) coordinates in degrees.
   # @param [Integer] resolution The desired H3 resolution (0-15).
-  # @param [Integer] flags Reserved by H3 for future use (default 0). Validated (must be 0) but does not change the result, which always uses center containment.
+  # @param [Integer] flags Reserved by H3 for future use (default 0). Values above 3 raise; otherwise ignored, so results always use center containment.
   #   For other containment modes, use `polygon_to_cells_experimental` with `mode: H3::ContainmentMode`.
   #
   # @example Fill a polygon with H3 cells.
