@@ -15,8 +15,8 @@ Crystal language bindings for Uber's [H3 hexagonal spatial indexing library](htt
 
 ```bash
 mise install                      # Install Crystal version from .mise.toml
-shards install                    # Install deps + build C library (postinstall hook runs make -C ext)
-make -C ext                       # Rebuild just the C extension (produces ext/h3/build/lib/libh3.a)
+shards install                    # Install deps (postinstall `make -C ext` only fires for consumers, not here)
+make -C ext                       # Build the C extension (produces ext/h3/build/lib/libh3.a); required before specs
 crystal spec --verbose            # Run all tests
 crystal tool format --check       # Check formatting (CI uses this)
 crystal tool format               # Auto-format code

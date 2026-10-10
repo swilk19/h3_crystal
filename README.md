@@ -192,6 +192,17 @@ This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
 
 For projects that work with GeoJSON data, an optional integration with the [geocrystal/geojson](https://github.com/geocrystal/geojson) shard is available.
 
+`geojson` is not installed with `h3_crystal`. To use the integration, add it to your own `shard.yml`:
+
+```yaml
+dependencies:
+  geojson:
+    github: geocrystal/geojson
+    version: "~> 0.6"
+```
+
+Then require the integration explicitly:
+
 ```crystal
 require "h3_crystal/h3/geojson"
 
@@ -212,7 +223,7 @@ multi_polygon = H3.cells_to_geojson_multi_polygon(cells)
 multi_polygon.to_json # => valid GeoJSON
 ```
 
-The `geojson` shard is listed as a dependency. Consumers must explicitly `require "h3_crystal/h3/geojson"` to activate the integration.
+The core `require "h3_crystal/h3"` does not load the integration.
 
 ## Development
 
