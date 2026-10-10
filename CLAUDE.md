@@ -9,7 +9,7 @@ Crystal language bindings for Uber's [H3 hexagonal spatial indexing library](htt
 ## Tooling
 
 - **mise** manages the Crystal version (`.mise.toml`). Run `mise install` to set up.
-- Crystal >= 1.10.0 required (`shard.yml` constraint)
+- Crystal >= 1.10.1 required (`shard.yml` constraint)
 
 ## Build & Development Commands
 
