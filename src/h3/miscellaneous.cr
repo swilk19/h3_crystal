@@ -31,7 +31,8 @@ module Miscellaneous
   # @return [Float] Length of edge in kilometres
   def edge_length_km(resolution : Int32) : Float64
     length = 0.0
-    LibH3.edge_length_km(Resolution.new(resolution), pointerof(length))
+    err = LibH3.edge_length_km(resolution, pointerof(length))
+    H3::Error.check!(err, "Couldn't get average edge length in kilometres")
     length
   end
 
@@ -48,7 +49,8 @@ module Miscellaneous
   # @return [Float] Length of edge in metres
   def edge_length_m(resolution : Int32) : Float64
     length = 0.0
-    LibH3.edge_length_m(Resolution.new(resolution), pointerof(length))
+    err = LibH3.edge_length_m(resolution, pointerof(length))
+    H3::Error.check!(err, "Couldn't get average edge length in metres")
     length
   end
 
@@ -65,7 +67,8 @@ module Miscellaneous
   # @return [Float] Average hexagon area in square kilometres.
   def hex_area_km2(resolution : Int32) : Float64
     area = 0.0
-    LibH3.hex_area_km2(Resolution.new(resolution), pointerof(area))
+    err = LibH3.hex_area_km2(resolution, pointerof(area))
+    H3::Error.check!(err, "Couldn't get average hexagon area in square kilometres")
     area
   end
 
@@ -82,7 +85,8 @@ module Miscellaneous
   # @return [Float] Average hexagon area in square metres.
   def hex_area_m2(resolution : Int32) : Float64
     area = 0.0
-    LibH3.hex_area_m2(Resolution.new(resolution), pointerof(area))
+    err = LibH3.hex_area_m2(resolution, pointerof(area))
+    H3::Error.check!(err, "Couldn't get average hexagon area in square metres")
     area
   end
 
@@ -99,7 +103,8 @@ module Miscellaneous
   # @return [Integer] Number of unique hexagons
   def hexagon_count(resolution : Int32) : Int64
     count = 0_i64
-    LibH3.hexagon_count(Resolution.new(resolution), pointerof(count))
+    err = LibH3.hexagon_count(resolution, pointerof(count))
+    H3::Error.check!(err, "Couldn't get cell count")
     count
   end
 
@@ -155,7 +160,8 @@ module Miscellaneous
   def base_cells : Array(UInt64)
     count = base_cell_count
     output = Pointer(UInt64).malloc(count)
-    LibH3.res_0_cells(output)
+    err = LibH3.res_0_cells(output)
+    H3::Error.check!(err, "Couldn't get base cells")
     Array(UInt64).new(count) { |i| output[i] }
   end
 
@@ -231,7 +237,7 @@ module Miscellaneous
     raise H3::DomainError.new("Expected #{resolution} digits, got #{digits.size}") if digits.size != resolution
 
     out = 0_u64
-    err = LibH3.construct_cell(Resolution.new(resolution), base_cell, digits.to_unsafe, pointerof(out))
+    err = LibH3.construct_cell(resolution, base_cell, digits.to_unsafe, pointerof(out))
     H3::Error.check!(err, "Failed to construct cell")
     out
   end
@@ -246,7 +252,8 @@ module Miscellaneous
   def pentagons(resolution) : Array(UInt64)
     count = 12
     output = Pointer(UInt64).malloc(count)
-    LibH3.get_pentagons(resolution, output)
+    err = LibH3.get_pentagons(resolution, output)
+    H3::Error.check!(err, "Couldn't get pentagons")
     Array(UInt64).new(count) { |i| output[i] }
   end
 

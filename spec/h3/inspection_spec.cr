@@ -108,4 +108,12 @@ describe H3 do
       end
     end
   end
+
+  describe ".from_string with an invalid string" do
+    ["zzz", ""].each do |input|
+      it "raises Error for #{input.inspect}" do
+        expect_raises(H3::Error) { H3.from_string(input) }
+      end
+    end
+  end
 end

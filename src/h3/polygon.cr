@@ -36,7 +36,7 @@ module Polygon
   def max_polygon_to_cells_size(polygon : Array(Tuple(Float64, Float64)), resolution : Int32, holes : Array(Array(Tuple(Float64, Float64))) = [] of Array(Tuple(Float64, Float64)), flags : UInt32 = 0_u32) : Int64
     geo_polygon = build_geo_polygon(polygon, holes)
     count = 0_i64
-    err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), Resolution.new(resolution), flags, pointerof(count))
+    err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), resolution, flags, pointerof(count))
     H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
 
     count
@@ -58,12 +58,12 @@ module Polygon
   def polygon_to_cells(polygon : Array(Tuple(Float64, Float64)), resolution : Int32, holes : Array(Array(Tuple(Float64, Float64))) = [] of Array(Tuple(Float64, Float64)), flags : UInt32 = 0_u32) : Array(UInt64)
     geo_polygon = build_geo_polygon(polygon, holes)
     max_size = 0_i64
-    err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), Resolution.new(resolution), flags, pointerof(max_size))
+    err = LibH3.max_polygon_to_cells_size(pointerof(geo_polygon), resolution, flags, pointerof(max_size))
     H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
     return [] of UInt64 if max_size <= 0
 
     output = Pointer(UInt64).malloc(max_size)
-    err = LibH3.polygon_to_cells(pointerof(geo_polygon), Resolution.new(resolution), flags, output)
+    err = LibH3.polygon_to_cells(pointerof(geo_polygon), resolution, flags, output)
     H3::Error.check!(err, "Couldn't fill polygon with cells")
 
     read_array_of_uint64(output, max_size)
@@ -81,7 +81,7 @@ module Polygon
   def max_polygon_to_cells_size_experimental(polygon : Array(Tuple(Float64, Float64)), resolution : Int32, holes : Array(Array(Tuple(Float64, Float64))) = [] of Array(Tuple(Float64, Float64)), mode : H3::ContainmentMode = H3::ContainmentMode::Center) : Int64
     geo_polygon = build_geo_polygon(polygon, holes)
     count = 0_i64
-    err = LibH3.max_polygon_to_cells_size_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, pointerof(count))
+    err = LibH3.max_polygon_to_cells_size_experimental(pointerof(geo_polygon), resolution, mode.value, pointerof(count))
     H3::Error.check!(err, "Couldn't estimate max polygon to cells size")
 
     count
@@ -104,7 +104,7 @@ module Polygon
     return [] of UInt64 if max_size <= 0
 
     output = Pointer(UInt64).malloc(max_size)
-    err = LibH3.polygon_to_cells_experimental(pointerof(geo_polygon), Resolution.new(resolution), mode.value, max_size, output)
+    err = LibH3.polygon_to_cells_experimental(pointerof(geo_polygon), resolution, mode.value, max_size, output)
     H3::Error.check!(err, "Couldn't fill polygon with cells")
 
     read_array_of_uint64(output, max_size)

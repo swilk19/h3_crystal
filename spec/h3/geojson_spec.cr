@@ -1,6 +1,5 @@
 require "spec"
 require "../../src/h3/geojson"
-include H3::Bindings::Types
 
 # A polygon roughly covering part of San Francisco (GeoJSON coordinate order: [lng, lat])
 SF_POLYGON_GEOJSON = GeoJSON::Polygon.new([

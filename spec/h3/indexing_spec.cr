@@ -56,4 +56,12 @@ describe H3 do
       end
     end
   end
+
+  describe ".from_geo_coordinates with an invalid resolution" do
+    [16, -1].each do |res|
+      it "raises ResDomainError for #{res}" do
+        expect_raises(H3::ResDomainError) { H3.from_geo_coordinates({1.0, 1.0}, res) }
+      end
+    end
+  end
 end

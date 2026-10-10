@@ -5,7 +5,6 @@ module Indexing
   include H3::Bindings::Base
   include Miscellaneous
 
-  # include H3::Bindings::Types
   # Derive H3 index for the given set of coordinates.
   #
   # @param [Array<Integer>] coords A coordinate pair.
@@ -31,7 +30,8 @@ module Indexing
     )
 
     h3_index = 0_u64
-    LibH3.lat_lng_to_cell(pointerof(lat_lng), Resolution.new(resolution), pointerof(h3_index))
+    err = LibH3.lat_lng_to_cell(pointerof(lat_lng), resolution, pointerof(h3_index))
+    H3::Error.check!(err, "Couldn't convert coordinates to cell")
 
     h3_index
   end
@@ -49,7 +49,8 @@ module Indexing
   # @return [Array<Integer>] A coordinate pair.
   def to_geo_coordinates(h3_index : UInt64) : Tuple(Float64, Float64)
     coords = LibH3::LatLng.new(lat: 0.0, lng: 0.0)
-    LibH3.cell_to_lat_lng(h3_index, pointerof(coords))
+    err = LibH3.cell_to_lat_lng(h3_index, pointerof(coords))
+    H3::Error.check!(err, "Couldn't convert cell to coordinates")
 
     {rads_to_degs(coords.lat), rads_to_degs(coords.lng)}
   end
@@ -74,7 +75,8 @@ module Indexing
   # @return [Array<Array<Integer>>] An array of six coordinate pairs.
   def to_boundary(h3_index : UInt64) : Array(Tuple(Float64, Float64))
     geo_boundary = LibH3::CellBoundary.new(num_verts: 0, verts: StaticArray(LibH3::LatLng, 10).new(LibH3::LatLng.new(lat: 0.0, lng: 0.0)))
-    LibH3.cell_to_boundary(h3_index, pointerof(geo_boundary))
+    err = LibH3.cell_to_boundary(h3_index, pointerof(geo_boundary))
+    H3::Error.check!(err, "Couldn't get boundary for cell")
 
     geo_boundary.verts.first(geo_boundary.num_verts).map do |vertex|
       {rads_to_degs(vertex.lat), rads_to_degs(vertex.lng)}

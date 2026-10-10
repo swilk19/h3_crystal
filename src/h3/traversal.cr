@@ -17,7 +17,8 @@ module Traversal
   # @return [Integer] Maximum k-ring size.
   def max_kring_size(k : Int32) : Int32
     size = 0_i64
-    LibH3.max_grid_disk_size(k, pointerof(size))
+    err = LibH3.max_grid_disk_size(k, pointerof(size))
+    H3::Error.check!(err, "Couldn't compute max grid disk size")
     size.to_i
   end
 
@@ -35,7 +36,8 @@ module Traversal
   # @return [Integer] Distance between indexes.
   def distance(origin : UInt64, h3_index : UInt64) : Int32
     dist = 0_i64
-    LibH3.distance(origin, h3_index, pointerof(dist))
+    err = LibH3.distance(origin, h3_index, pointerof(dist))
+    H3::Error.check!(err, "Couldn't compute grid distance")
     dist.to_i
   end
 
@@ -45,7 +47,7 @@ module Traversal
   #
   # This value is simply `h3_distance(origin, destination) + 1` when a line is computable.
   #
-  # Returns a negative number if a line cannot be computed e.g.
+  # Raises if a line cannot be computed e.g.
   # a pentagon was encountered, or the hexagons are too far apart.
   #
   # @param [Integer] origin Origin H3 index
@@ -58,7 +60,8 @@ module Traversal
   # @return [Integer] Number of hexagons found between indexes.
   def line_size(origin : UInt64, destination : UInt64) : Int32
     size = 0_i64
-    LibH3.line_size(origin, destination, pointerof(size))
+    err = LibH3.line_size(origin, destination, pointerof(size))
+    H3::Error.check!(err, "Couldn't compute line size")
     size.to_i
   end
 
@@ -123,7 +126,8 @@ module Traversal
   def k_ring(origin, k) : Array(UInt64)
     max_hexagons = max_kring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
-    LibH3.k_ring(origin, k, output)
+    err = LibH3.k_ring(origin, k, output)
+    H3::Error.check!(err, "Could not compute k-ring")
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -346,7 +350,8 @@ module Traversal
     max_out_size = max_kring_size(k)
     output = Pointer(UInt64).malloc(max_out_size)
     distances = Pointer(Int32).malloc(max_out_size)
-    LibH3.k_ring_distances(origin, k, output, distances)
+    err = LibH3.k_ring_distances(origin, k, output, distances)
+    H3::Error.check!(err, "Could not compute k-ring distances")
     hexagons = read_array_of_uint64(output, max_out_size)
     distances = read_array_of_int32(distances, max_out_size)
 
