@@ -13,13 +13,13 @@ module Vertex
   # @example Get vertex 0 of a cell.
   #   H3.cell_to_vertex(612933930963697663, 0)
   #
-  # @raise [Exception] If the vertex number is invalid for the cell.
+  # @raise [H3::Error] If the vertex number is invalid for the cell.
   #
   # @return [Integer] H3 vertex index.
   def cell_to_vertex(origin : UInt64, vertex_num : Int32) : UInt64
     vertex = 0_u64
     err = LibH3.cell_to_vertex(origin, vertex_num, pointerof(vertex))
-    raise Exception.new("Couldn't get vertex for cell") if err != 0
+    H3::Error.check!(err, "Couldn't get vertex for cell")
     vertex
   end
 
@@ -34,13 +34,13 @@ module Vertex
   # @example Get all vertices of a cell.
   #   H3.cell_to_vertexes(612933930963697663)
   #
-  # @raise [Exception] If the operation fails.
+  # @raise [H3::Error] If the operation fails.
   #
   # @return [Array<Integer>] Array of H3 vertex indexes.
   def cell_to_vertexes(origin : UInt64) : Array(UInt64)
     vertexes = Pointer(UInt64).malloc(6)
     err = LibH3.cell_to_vertexes(origin, vertexes)
-    raise Exception.new("Couldn't get vertexes for cell") if err != 0
+    H3::Error.check!(err, "Couldn't get vertexes for cell")
     read_array_of_uint64(vertexes, 6)
   end
 
@@ -52,13 +52,13 @@ module Vertex
   #   H3.vertex_to_lat_lng(vertex_index)
   #   {lat, lng}
   #
-  # @raise [Exception] If the vertex is invalid.
+  # @raise [H3::Error] If the vertex is invalid.
   #
   # @return [Tuple(Float64, Float64)] Latitude and longitude in degrees.
   def vertex_to_lat_lng(vertex : UInt64) : Tuple(Float64, Float64)
     coords = LibH3::LatLng.new(lat: 0.0, lng: 0.0)
     err = LibH3.vertex_to_lat_lng(vertex, pointerof(coords))
-    raise Exception.new("Couldn't get coordinates for vertex") if err != 0
+    H3::Error.check!(err, "Couldn't get coordinates for vertex")
     {rads_to_degs(coords.lat), rads_to_degs(coords.lng)}
   end
 
@@ -87,13 +87,13 @@ module Vertex
   #   H3.cell_to_local_ij(origin, target)
   #   {i, j}
   #
-  # @raise [Exception] If the conversion fails (e.g., cells are too far apart or a pentagon is encountered).
+  # @raise [H3::Error] If the conversion fails (e.g., cells are too far apart or a pentagon is encountered).
   #
   # @return [Tuple(Int32, Int32)] IJ coordinates as {i, j}.
   def cell_to_local_ij(origin : UInt64, h3 : UInt64, mode : UInt32 = 0_u32) : Tuple(Int32, Int32)
     coord = LibH3::CoordIJ.new(i: 0, j: 0)
     err = LibH3.cell_to_local_ij(origin, h3, mode, pointerof(coord))
-    raise Exception.new("Couldn't convert cell to local IJ coordinates") if err != 0
+    H3::Error.check!(err, "Couldn't convert cell to local IJ coordinates")
     {coord.i, coord.j}
   end
 
@@ -108,14 +108,14 @@ module Vertex
   # @example Convert local IJ coordinates back to a cell.
   #   H3.local_ij_to_cell(origin, {1, 2})
   #
-  # @raise [Exception] If the conversion fails.
+  # @raise [H3::Error] If the conversion fails.
   #
   # @return [Integer] H3 cell index.
   def local_ij_to_cell(origin : UInt64, ij : Tuple(Int32, Int32), mode : UInt32 = 0_u32) : UInt64
     coord = LibH3::CoordIJ.new(i: ij[0], j: ij[1])
     result = 0_u64
     err = LibH3.local_ij_to_cell(origin, pointerof(coord), mode, pointerof(result))
-    raise Exception.new("Couldn't convert local IJ coordinates to cell") if err != 0
+    H3::Error.check!(err, "Couldn't convert local IJ coordinates to cell")
     result
   end
 end

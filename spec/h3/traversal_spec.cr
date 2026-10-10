@@ -130,7 +130,7 @@ describe H3 do
       k = 1
 
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::PentagonError) do
           hex_range = H3.hex_range(h3_index, k)
         end
       end
@@ -201,7 +201,7 @@ describe H3 do
           "85283477fffffff", "8528340ffffffff", "8528340bfffffff",
         ].map { |i| i.to_u64(16) }
 
-        expect_raises(Exception) do
+        expect_raises(H3::PentagonError) do
           hex_range_distances = H3.hex_range_distances(h3_index, k)
         end
       end
@@ -287,7 +287,7 @@ describe H3 do
         h3_set = [h3_index]
         k = 1
 
-        expect_raises(Exception) do
+        expect_raises(H3::PentagonError) do
           hex_ranges = H3.hex_ranges_grouped(h3_set, k)
         end
       end
@@ -395,7 +395,7 @@ describe H3 do
       k = 1
 
       it "raises an error" do
-        expect_raises(Exception) do
+        expect_raises(H3::PentagonError) do
           hex_ring = H3.hex_ring(h3_index, k)
         end
       end
@@ -417,7 +417,7 @@ describe H3 do
       pentagon = "821c07fffffffff".to_u64(16)
 
       it "succeeds where hex_ring raises" do
-        expect_raises(Exception) { H3.hex_ring(pentagon, 1) }
+        expect_raises(H3::PentagonError) { H3.hex_ring(pentagon, 1) }
 
         ring = H3.grid_ring(pentagon, 1)
         ring.size.should eq 5

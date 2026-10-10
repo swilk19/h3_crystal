@@ -87,14 +87,14 @@ module Traversal
   #     617700170044014591
   #   ]
   #
-  # @raise [ArgumentError] Raised if the range contains a pentagon.
+  # @raise [H3::PentagonError] Raised if the range contains a pentagon.
   #
   # @return [Array<Integer>] Array of H3 indexes within the k-range.
   def hex_range(origin, k) : Array(UInt64)
     max_hexagons = max_kring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
     err = LibH3.hex_range(origin, k, output)
-    raise(Exception.new("Specified hexagon range contains a pentagon")) if err != 0
+    H3::Error.check!(err, "Specified hexagon range contains a pentagon")
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -143,14 +143,14 @@ module Traversal
   #     617700169982672895, 617700169983983615, 617700170044276735
   #   ]
   #
-  # @raise [ArgumentError] Raised if the hex ring contains a pentagon.
+  # @raise [H3::PentagonError] Raised if the hex ring contains a pentagon.
   #
   # @return [Array<Integer>] Array of H3 indexes within the hex ring.
   def hex_ring(origin, k) : Array(UInt64)
     max_hexagons = max_hex_ring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
     err = LibH3.hex_ring(origin, k, output)
-    raise Exception.new("The hex ring contains a pentagon") if err != 0
+    H3::Error.check!(err, "The hex ring contains a pentagon")
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -167,14 +167,14 @@ module Traversal
   # @example Derive the grid ring for the H3 index at k = 1
   #   H3.grid_ring(617700169983721471, 1)
   #
-  # @raise [Exception] Raised if the ring cannot be computed.
+  # @raise [H3::Error] Raised if the ring cannot be computed.
   #
   # @return [Array<Integer>] Array of H3 indexes within the ring.
   def grid_ring(origin : UInt64, k : Int32) : Array(UInt64)
     max_hexagons = max_grid_ring_size(k)
     output = Pointer(UInt64).malloc(max_hexagons)
     err = LibH3.grid_ring(origin, k, output)
-    raise Exception.new("Could not compute grid ring") if err != 0
+    H3::Error.check!(err, "Could not compute grid ring")
 
     read_array_of_uint64(output, max_hexagons)
   end
@@ -209,7 +209,7 @@ module Traversal
   def max_grid_ring_size(k : Int32) : Int32
     size = 0_i64
     err = LibH3.max_grid_ring_size(k, pointerof(size))
-    raise Exception.new("Failed to compute max grid ring size") if err != 0
+    H3::Error.check!(err, "Failed to compute max grid ring size")
     size.to_i
   end
 
@@ -237,7 +237,7 @@ module Traversal
   #     ]
   #   }
   #
-  # @raise [ArgumentError] Raised if any of the ranges contains a pentagon.
+  # @raise [H3::PentagonError] Raised if any of the ranges contains a pentagon.
   #
   # @see #hex_range
   #
@@ -266,15 +266,13 @@ module Traversal
   #     617700169983983615, 617700169983721471
   #   ]
   #
-  # @raise [ArgumentError] Raised if any of the ranges contains a pentagon.
+  # @raise [H3::PentagonError] Raised if any of the ranges contains a pentagon.
   def hex_ranges_ungrouped(h3_set : Array(UInt64), k : Int32) : Array(UInt64)
     max_out_size = h3_set.size * max_kring_size(k)
     output = Pointer(UInt64).malloc(max_out_size)
 
     err = LibH3.hex_ranges(h3_set, h3_set.size, k, output)
-    if err != 0
-      raise Exception.new("One of the specified hexagon ranges contains a pentagon")
-    end
+    H3::Error.check!(err, "One of the specified hexagon ranges contains a pentagon")
 
     read_array_of_uint64(output, max_out_size)
   end
@@ -300,7 +298,7 @@ module Traversal
   #     ]
   #   }
   #
-  # @raise [ArgumentError] Raised when the hex range contains a pentagon.
+  # @raise [H3::PentagonError] Raised when the hex range contains a pentagon.
   #
   # @return [Hash] Hex range grouped by distance.
   def hex_range_distances(origin, k) : Hash(Int32, Array(UInt64))
@@ -308,7 +306,7 @@ module Traversal
     output = Pointer(UInt64).malloc(max_out_size)
     distances = Pointer(Int32).malloc(max_out_size)
     err = LibH3.hex_range_distances(origin, k, output, distances)
-    raise(Exception.new("Specified hexagon range contains a pentagon")) if err != 0
+    H3::Error.check!(err, "Specified hexagon range contains a pentagon")
 
     hexagons = read_array_of_uint64(output, max_out_size)
     distances = read_array_of_int32(distances, max_out_size)
@@ -371,7 +369,7 @@ module Traversal
   # @example Derive the safe k-ring distances at distance 1
   #   H3.k_ring_distances_safe(617700169983721471, 1)
   #
-  # @raise [Exception] Raised if the disk cannot be computed.
+  # @raise [H3::Error] Raised if the disk cannot be computed.
   #
   # @return [Hash] Hash of cells grouped by distance.
   def k_ring_distances_safe(origin : UInt64, k : Int32) : Hash(Int32, Array(UInt64))
@@ -379,7 +377,7 @@ module Traversal
     output = Pointer(UInt64).malloc(max_out_size)
     distances = Pointer(Int32).malloc(max_out_size)
     err = LibH3.k_ring_distances_safe(origin, k, output, distances)
-    raise Exception.new("Could not compute k-ring distances") if err != 0
+    H3::Error.check!(err, "Could not compute k-ring distances")
 
     hexagons = Array(UInt64).new(max_out_size) { |i| output[i] }
     dists = read_array_of_int32(distances, max_out_size)
@@ -405,14 +403,14 @@ module Traversal
   #     617700169986867199, 617700169987391487, 617700169959866367
   #   ]
   #
-  # @raise [ArgumentError] Could not compute line
+  # @raise [H3::Error] Could not compute line
   #
   # @return [Array<Integer>] H3 indexes
   def line(origin, destination)
     max_hexagons = line_size(origin, destination)
     hexagons = Pointer(UInt64).malloc(max_hexagons)
     err = LibH3.h3_line(origin, destination, hexagons)
-    raise Exception.new("Could not compute line") if err != 0
+    H3::Error.check!(err, "Could not compute line")
 
     read_array_of_uint64(hexagons, max_hexagons)
   end

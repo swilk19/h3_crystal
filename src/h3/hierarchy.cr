@@ -98,13 +98,13 @@ module Hierarchy
   #   H3.max_uncompact_size(h3_set, 10)
   #   133
   #
-  # @raise [ArgumentError] Given resolution is invalid for h3_set.
+  # @raise [H3::ResMismatchError] Given resolution is invalid for h3_set.
   #
   # @return [Integer] Maximum size of uncompacted set.
   def max_uncompact_size(compacted_set : Array(UInt64), resolution : Int32) : Int64
     size = 0_i64
     err = LibH3.max_uncompact_size(compacted_set, compacted_set.size.to_i64, Resolution.new(resolution), pointerof(size))
-    raise Exception.new("Couldn't estimate size. Invalid resolution?") if err != 0
+    H3::Error.check!(err, "Couldn't estimate size. Invalid resolution?")
 
     size
   end
@@ -131,14 +131,14 @@ module Hierarchy
   #     613196840447246335
   #   ]
   #
-  # @raise [RuntimeError] Couldn't attempt to compact given H3 indexes.
+  # @raise [H3::Error] Couldn't attempt to compact given H3 indexes.
   #
   # @return [Array<Integer>] Compacted set of H3 indexes.
   def compact(h3_set : Array(UInt64)) : Array(UInt64)
     output = Pointer(UInt64).malloc(h3_set.size)
     err = LibH3.compact(h3_set, output, h3_set.size.to_i64)
 
-    raise Exception.new("Couldn't compact given indexes") if err != 0
+    H3::Error.check!(err, "Couldn't compact given indexes")
     read_array_of_uint64(output, h3_set.size)
   end
 
@@ -163,14 +163,14 @@ module Hierarchy
   #     617700440073830399, 617700440074092543, 617700440074354687
   #   ]
   #
-  # @raise [RuntimeError] Couldn't attempt to umcompact H3 indexes.
+  # @raise [H3::Error] Couldn't attempt to umcompact H3 indexes.
   #
   # @return [Array<Integer>] Uncompacted set of H3 indexes.
   def uncompact(compacted_set : Array(UInt64), resolution : Int32) : Array(UInt64)
     max_size = max_uncompact_size(compacted_set, resolution)
     output = Pointer(UInt64).malloc(max_size)
     err = LibH3.uncompact(compacted_set, compacted_set.size.to_i64, output, max_size, Resolution.new(resolution))
-    raise Exception.new("Couldn't uncompact given indexes") if err != 0
+    H3::Error.check!(err, "Couldn't uncompact given indexes")
 
     read_array_of_uint64(output, max_size)
   end
@@ -185,13 +185,13 @@ module Hierarchy
   #   H3.cell_to_child_pos(617700169982672895, 8)
   #   0
   #
-  # @raise [Exception] If the function fails (e.g., invalid resolution).
+  # @raise [H3::Error] If the function fails (e.g., invalid resolution).
   #
   # @return [Integer] Position of child within parent's children.
   def cell_to_child_pos(child : UInt64, parent_resolution : Int32) : Int64
     result = 0_i64
     err = LibH3.cell_to_child_pos(child, Resolution.new(parent_resolution), pointerof(result))
-    raise Exception.new("Couldn't get child position") if err != 0
+    H3::Error.check!(err, "Couldn't get child position")
 
     result
   end
@@ -207,13 +207,13 @@ module Hierarchy
   #   H3.child_pos_to_cell(0, 613196570357137407, 9)
   #   617700169982672895
   #
-  # @raise [Exception] If the function fails (e.g., invalid resolution or position).
+  # @raise [H3::Error] If the function fails (e.g., invalid resolution or position).
   #
   # @return [Integer] H3 index of child cell at the given position.
   def child_pos_to_cell(child_pos : Int64, parent : UInt64, child_resolution : Int32) : UInt64
     result = 0_u64
     err = LibH3.child_pos_to_cell(child_pos, parent, Resolution.new(child_resolution), pointerof(result))
-    raise Exception.new("Couldn't get child cell from position") if err != 0
+    H3::Error.check!(err, "Couldn't get child cell from position")
 
     result
   end

@@ -1,3 +1,4 @@
+require "../error"
 require "./lib_h3"
 require "./types"
 
