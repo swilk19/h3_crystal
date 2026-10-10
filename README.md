@@ -71,7 +71,7 @@ All public methods are called as `H3.method_name`.
 
 ## API Coverage
 
-This shard covers **97% of the H3 v4 API** (75 of 77 exported C functions).
+This shard covers **100% of the H3 v4 API** (all 78 exported C functions).
 
 ### Indexing
 
