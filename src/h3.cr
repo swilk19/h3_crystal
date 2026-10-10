@@ -13,7 +13,7 @@ require "./h3/edge"
 require "./h3/vertex"
 
 module H3
-  VERSION = "4.4.1"
+  VERSION = "4.4.0"
 
   # TODO: Put code here
   extend Indexing

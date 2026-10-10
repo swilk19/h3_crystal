@@ -7,7 +7,7 @@ authors:
 scripts:
   postinstall: "make -C ext"
 
-crystal: ">= 1.10.0"
+crystal: ">= 1.10.1"
 
 license: MIT
 
