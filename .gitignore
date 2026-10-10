@@ -11,3 +11,9 @@
 
 # H3 C library build artifacts
 ext/h3/build/
+
+# Beads local runtime/data (config.yaml, README.md, .gitignore are tracked)
+.beads/embeddeddolt/
+.beads/backup/
+.beads/dolt-server.*
+.beads/.auto-import-issues.jsonl
